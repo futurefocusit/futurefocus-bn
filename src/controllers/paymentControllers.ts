@@ -68,7 +68,6 @@ export class PaymentController {
           name: student.name,
           amount,
           remain: payment.amountDue - payment.amountPaid,
-          course: "",
         }).pay,
         [student.phone.toString()]
       );
