@@ -150,3 +150,9 @@ export interface accesstypes{
   duration:Number
   features:Ifeature[]
 }
+export interface IAPI{
+  inst:ObjectId,
+  api_name:string,
+  api_key:string
+  secret_key:string
+}

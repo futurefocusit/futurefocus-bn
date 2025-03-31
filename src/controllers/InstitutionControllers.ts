@@ -8,45 +8,77 @@
     import { Types } from "mongoose"
 import Role from "../models/role"
 import Permission from "../models/Permission"
+import API from "../models/API"
+import generateAPIKey from "../utils/generateAPIKey"
+import generateAPIName from "../utils/generateAPIName"
+import generateSecret from "../utils/generateSecret"
 
     export class InstitutionControllers { 
         static register = async (req: Request, res: Response) => {
             try {
-                const { name, email, phone } = req.body
-                const inst = await Institution.findOne({$or:[{email},{phone}]})
-                const adm =await Team.findOne({email})
-                if (inst||adm) {
-                    return res.status(400).json({ message: "Institution already exists" })
-
+                const { name, email, phone } = req.body;
+        
+                const [inst, adm] = await Promise.all([
+                    Institution.findOne({ $or: [{ email }, { phone }] }),
+                    Team.findOne({ email }),
+                ]);
+        
+                if (inst || adm) {
+                    return res.status(400).json({ message: "Institution or Admin already exists" });
                 }
-
-                if(!req.file){
-                    res.status(400).json({ message: "please upload your logo" });
-                    return
-                    
+        
+                if (!req.file) {
+                    return res.status(400).json({ message: "Please upload your logo" });
                 }
-                const logo = req.file.path
-                const newInst = await Institution.create({ name, email, phone, logo })
-                const permissions = await  Permission.find()
-                const role = await Role.create({institution:newInst._id,role:"Admin",permission:permissions})
-                if(!role){
-                    return res.status(400).json({message:"Admin role not available"})
+        
+                const logo = req.file.path;
+        
+                const newInst = await Institution.create({ name, email, phone, logo });
+        
+                const [permissions] = await Promise.all([Permission.find()]);
+                const role = await Role.create({ institution: newInst._id, role: "Admin", permission: permissions });
+        
+                if (!role) {
+                    return res.status(400).json({ message: "Admin role not available" });
                 }
-
-                await Team.create({ institution: newInst._id, name ,role:role._id, email, phone, isAdmin: true, image: 'hhh', position: "Admin" })
-            const mailOptions = {
-                from: process.env.OUR_EMAIL as string,
-                to: email,
-                subject: "Registered",
-                html: notifyInstuEmail(name),
+        
+                await Team.create({
+                    institution: newInst._id,
+                    name,
+                    role: role._id,
+                    email,
+                    phone,
+                    isAdmin: true,
+                    image: 'hhh',
+                    position: "Admin",
+                });
+        
+                const newAPI = new API({
+                    inst: newInst._id,
+                    api_key: generateAPIKey(),
+                    api_name: generateAPIName(),
+                    secret_key: generateSecret(),
+                });
+        
+                await newAPI.save();
+        
+                const mailOptions = {
+                    from: process.env.OUR_EMAIL as string,
+                    to: email,
+                    subject: "Registered",
+                    html: notifyInstuEmail(name),
                 };
-                res.status(201).json({ message: "Institution created successfully" })
-                await sendEmail(mailOptions)
+        
+                await sendEmail(mailOptions);
+        
+                return res.status(201).json({ message: "Institution created successfully" });
             } catch (error) {
-                res.status(500).json({ message: "internal server error" })
+                console.error("Registration error: ", error); 
+                return res.status(500).json({ message: "Internal server error" });
             }
+        };
 
-        }
+        
         static all = async (req: Request, res: Response) => {
             try {
                 const inst = await Institution.find()

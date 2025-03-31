@@ -57,6 +57,7 @@ export const resetTemplates = (user: any, token: any) => {
   </body>
   </html>`;
 };
+
 export const staffResetTemplates = (user: any, token: any) => {
   return `<!DOCTYPE html>
   <html>
