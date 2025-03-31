@@ -83,7 +83,7 @@ export class AdminControllers {
           if(!inst){
            return res.status(400).json({message:"can not find inst with this website"})
           }
-      const intakes = await Intake.find({institution:inst._id});
+      const intakes = await Intake.find();
       res.status(200).json({ intakes });
     } catch (error) {
       res.status(500).json({ message: "failed to load intakes" });
@@ -107,7 +107,7 @@ export class AdminControllers {
       if(!inst){
        return res.status(400).json({message:"can not find inst with this website"})
       }
-      const shifts = await Shift.find({institution:inst._id});
+      const shifts = await Shift.find();
       res.status(200).json({ shifts });
     } catch (error) {
       res.status(500).json({ message: "failed to load shifts" });
