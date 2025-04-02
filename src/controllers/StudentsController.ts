@@ -125,6 +125,7 @@ export class StudentControllers {
   static changeStatus = async (req: Request, res: Response) => {
     const id = req.params.id;
     const { status, user, paymentMethod } = req.body;
+    const loggedUser = (req as any).loggedUser
 
     try {
       const student = await Student.findById(id);
@@ -141,11 +142,13 @@ export class StudentControllers {
       );
       if (status === "registered") {
         await Transaction.create({
+          institution:loggedUser.institution,
           studentId: student._id,
           amount: 10000,
           reason: "Registration fees",
         });
         await Cashflow.create({
+          institution:loggedUser.institution,
           user: user,
           amount: 10000,
           reason: `${student.name} registration Fees`,
@@ -153,6 +156,7 @@ export class StudentControllers {
           type: "income",
         });
         await Payment.create({
+          institution:loggedUser.institution,
           studentId: student._id,
           amountDue: course.scholarship,
           amountDiscounted: course.nonScholarship - course.scholarship,
