@@ -138,7 +138,7 @@ export class StudentControllers {
       }
 
       await Student.findByIdAndUpdate(id, { status: status }).populate(
-        "selectedCourse"
+        "selectedCourse" 
       );
       if (status === "registered") {
         await Transaction.create({

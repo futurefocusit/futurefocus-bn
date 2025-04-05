@@ -5,7 +5,6 @@ import Cashflow from "../models/otherTransactions";
 import Student from "../models/Students";
 import { sendMessage } from "../utils/sendSms";
 import { MessageTemplate } from "../utils/messageBod";
-
 export class PaymentController {
   static SchoolFees = async (req: any, res: Response) => {
     const { id } = req.params;
@@ -27,26 +26,28 @@ export class PaymentController {
 
       payment.amountPaid += amount;
       const totalAmountDue = payment.amountDue;
-
+      if (payment.amountPaid > totalAmountDue) {
+        return res
+          .status(400)
+          .json({ message: "amount you are paying are more than required" });
+      }
       if (payment.amountPaid < totalAmountDue) {
         payment.status = "partial";
       } else if (payment.amountPaid === totalAmountDue) {
         payment.status = "paid";
-      } else {
-        payment.status = "overpaid";
       }
 
       await payment.save();
 
       await Transaction.create({
-        institution:loggedUser.institution,
+        institution: loggedUser.institution,
         studentId: id,
         amount: amount,
         reason: "school fees",
       });
 
       await Cashflow.create({
-        institution:loggedUser.institution,
+        institution: loggedUser.institution,
         amount: amount,
         reason: `${student.name} School Fees`,
         user: user,
@@ -61,7 +62,7 @@ export class PaymentController {
         paid: payment.amountPaid,
         remaining: payment.amountDue - payment.amountPaid,
         status: payment.status,
-        paymentMethod:method
+        paymentMethod: method
       };
       await sendMessage(
         MessageTemplate({
@@ -81,11 +82,50 @@ export class PaymentController {
     }
   };
 
-  static payment = async (req: any, res: Response) => {
-    try {
+  static recoverPayment = async (req: any, res: Response) => {
+    const { studentId } = req.params;
+    const { amountDue, amountPaid } = req.body;
     const loggedUser = req.loggedUser
 
-    const payment = await Payment.find({institution:loggedUser.institution});
+    try {
+      const student = await Student.findById(studentId);
+      const payment = await Payment.findOne({ studentId });
+
+      if (!student) {
+        return res.status(404).json({ message: "Unable to find student info" });
+      }
+      if (payment) {
+        return res
+          .status(404)
+          .json({ message: "payment already exists " });
+      }
+      if (amountDue < amountPaid) {
+        return res
+          .status(400)
+          .json({ message: "amount paid is hiher tha required " });
+      }
+
+      await Payment.create({
+        amountDue,
+        amountPaid,
+        institution: loggedUser.institution,
+        studentId,
+        status: amountDue === amountPaid ? 'paid' : 'partial'
+      })
+
+      res.status(200).json({
+        message: `You have successfully recovered payment`,
+      });
+    } catch (error: any) {
+      res.status(500).json({ message: `Error: ${error.message} occurred` });
+    }
+  };
+
+  static payment = async (req: any, res: Response) => {
+    try {
+      const loggedUser = req.loggedUser
+
+      const payment = await Payment.find({ institution: loggedUser.institution });
       res.status(200).json(payment);
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} occured` });
@@ -93,9 +133,9 @@ export class PaymentController {
   };
   static getTansactions = async (req: any, res: Response) => {
     try {
-    const loggedUser = req.loggedUser
+      const loggedUser = req.loggedUser
 
-      const transactions = await Transaction.find({institution:loggedUser.institution}).populate("studentId");
+      const transactions = await Transaction.find({ institution: loggedUser.institution }).populate("studentId");
       res.status(200).json(transactions);
     } catch (error: any) {
       res.status(500).json({ message: `Eror ${error.message} occured` });
@@ -182,7 +222,7 @@ export class PaymentController {
     const { id } = req.params;
     const { comment } = req.body;
     try {
-      const payment = await Payment.findOne({studentId:id});
+      const payment = await Payment.findOne({ studentId: id });
       if (!payment) {
         return res.status(400).json({ message: "no student found" });
       }
