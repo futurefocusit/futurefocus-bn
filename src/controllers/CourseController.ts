@@ -18,7 +18,7 @@ export class CourseController {
   static getAll = async (req: any, res: Response) => {
     try {
     const loggedUser = req.loggedUser
-      const courses =req.loggedUser? await Course.find({institution:loggedUser.institution}).populate('shifts'): await Course.find({institution:req.api.inst});
+      const courses =req.loggedUser? await Course.find({institution:loggedUser.institution}).populate('shifts'): await Course.find({institution:req.api.inst}).populate('shifts');
       res.status(200).json(courses);
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} occured` });
