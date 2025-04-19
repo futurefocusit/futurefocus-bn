@@ -21,7 +21,7 @@ indexRouter.use("/students", StudentRoutes);
 indexRouter.use("/member", TeamRoute);
 indexRouter.use("/service",isloggedIn, ServiceRoute);
 indexRouter.use("/course", CourseRoute);
-indexRouter.use("/media",isloggedIn, MediaRouter);
+indexRouter.use("/media", MediaRouter);
 indexRouter.use("/payment",isloggedIn, paymentRouter);
 indexRouter.use("/cashflow",isloggedIn, cashRouter);
 // indexRouter.use("/job", isloggedIn,JobRouter);

@@ -47,11 +47,11 @@ export const resetTemplates = (user: any, token: any) => {
               <p>Hello, Admin</p>
               <p>It seems like you are trying to reset your password. Click the link below to reset your password.</p>
               <a href="${process.env.FRONT_END_URI}/reset-password/${token}">Reset Password</a>
-              <p>If you are not Future focus Admin , please ignore this email.</p>
-              <p>Best Regards,<br>Future focus Team</p>
+              <p>If you are not Xcooll user , please ignore this email.</p>
+              <p>Best Regards,<br>Xcooll Team</p>
           </div>
           <div class="email-footer">
-              <p>&copy; 2024 Future Focus Academy. All rights reserved.</p>
+              <p>&copy; 2025 Xcooll. All rights reserved.</p>
           </div>
       </div>
   </body>
@@ -105,11 +105,11 @@ export const staffResetTemplates = (user: any, token: any) => {
               <p>Hello, ${user}</p>
               <p>It seems like you are trying to reset your password. Click the link below to reset your password.</p>
               <a href="${process.env.STUDENT_PORTAL}/reset-password/${token}">Reset Password</a>
-              <p>If you are not Future focus Admin , please ignore this email.</p>
-              <p>Best Regards,<br>Future focus Team</p>
+              <p>If you are not XCooll , please ignore this email.</p>
+              <p>Best Regards,<br>Xcooll Team</p>
           </div>
           <div class="email-footer">
-              <p>&copy; 2024 Future Focus Academy. All rights reserved.</p>
+              <p>&copy; 2025 Xcooll. All rights reserved.</p>
           </div>
       </div>
   </body>
@@ -156,16 +156,16 @@ export const SubscriptionEmail = () => {
   <body>
       <div class="email-container">
           <div class="email-header">
-              <h1>Futurefocus</h1>
+              <h1>Xcooll</h1>
           </div>
           <div class="email-body">
               <p>Hello </p>
-              <p> thank you for subscribe to our Future Focus Academy</p>
+              <p> thank you for subscribe to our Future Xcooll</p>
               <
-              <p>Future Focus cademy,<br>Here to serve you</p>
+              <p>Future Xcooll,<br>Here to serve you</p>
           </div>
           <div class="email-footer">
-              <p>&copy; 2024 Future Focus Academy. All rights reserved.</p>
+              <p>&copy; 2024 Xcooll All rights reserved.</p>
           </div>
       </div>
   </body>

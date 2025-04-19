@@ -30,13 +30,13 @@ export const uploadMedia = async (req: Request, res: Response) => {
     let fileUrl = "";
 
     if (req.file) {
-   
+
       fileUrl = req.file.path;
     } else {
       return res.status(400).json({ message: "File is required." });
     }
 
-   
+
 
     const media = new Media({
       type,
@@ -93,7 +93,7 @@ export const deleteMedia = async (req: Request, res: Response) => {
     res.status(200).json({ message: "Media deleted successfully" });
   } catch (error) {
     console.error("Error deleting media:", error);
-    res.status(500).json({ message: "Error deleting media", error }); 
+    res.status(500).json({ message: "Error deleting media", error });
   }
 };
 
@@ -109,9 +109,9 @@ export const getMedia = async (req: Request, res: Response) => {
 };
 export const getVideos = async (req: Request, res: Response) => {
   try {
-    const video = await Video.find({type:"video"});
-    const beat = await Video.find({type:"beat"});
-    res.status(200).json({video,beat});
+    const video = await Video.find({ type: "video" });
+    const beat = await Video.find({ type: "beat" });
+    res.status(200).json({ video, beat });
   } catch (error) {
     console.error("Error fetching media:", error);
     res.status(500).json({ message: "Error fetching media", error });
@@ -119,9 +119,9 @@ export const getVideos = async (req: Request, res: Response) => {
 };
 export const deleteVideos = async (req: Request, res: Response) => {
   try {
-    const {id}=req.params
-   await Video.findByIdAndDelete(id)
-   res.status(200).json({ message: "Video deleted successfully" });
+    const { id } = req.params
+    await Video.findByIdAndDelete(id)
+    res.status(200).json({ message: "Video deleted successfully" });
   } catch (error) {
     console.error("Error deleting media media:", error);
     res.status(500).json({ message: "Error deleting media", error });
@@ -129,12 +129,13 @@ export const deleteVideos = async (req: Request, res: Response) => {
 };
 
 export const postVideos = async (req: Request, res: Response) => {
-  const {url,type}= req.body
+  const { url, type } = req.body
   try {
- await Video.create({url,
-  type
- });
-    res.status(200).json({message:"video posted "});
+    await Video.create({
+      url,
+      type
+    });
+    res.status(200).json({ message: "video posted " });
   } catch (error) {
     console.error("Error fetching media:", error);
     res.status(500).json({ message: "Error fetching media", error });

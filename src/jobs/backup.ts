@@ -55,13 +55,11 @@ export const backup = async () => {
         }
       }
 
-      // Clean up local backup directory
       fs.rmSync(backupDir, { recursive: true, force: true });
       console.log("Local backup directory cleaned up.");
     } catch (error) {
       console.error("Backup process failed:", error);
 
-      // Clean up local backup directory even if there's an error
       if (fs.existsSync(backupDir)) {
         fs.rmSync(backupDir, { recursive: true, force: true });
       }

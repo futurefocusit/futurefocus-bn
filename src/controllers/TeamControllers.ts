@@ -14,24 +14,24 @@ export class TeamControllers {
     try {
       const loggedUser = req.loggedUser
 
-      const { name, title, image, email,position, instagram } = req.body;
+      const { name, title, image, email, position, instagram } = req.body;
       const isExist = await Team.findOne({ email: email });
       if (isExist) {
         return res.status(400).json({ message: "member already exist" });
       }
-      await Team.create({ name, title, image, email, position, instagram,institution:loggedUser.institution });
-      return res.status(200).json({ messsage: "member added" }); 
-    } catch (error: any) { 
+      await Team.create({ name, title, image, email, position, instagram, institution: loggedUser.institution });
+      return res.status(200).json({ messsage: "member added" });
+    } catch (error: any) {
       return res
         .status(500)
-        .json({ message: `error ${error.message} Occured` });  
+        .json({ message: `error ${error.message} Occured` });
     }
   };
   static Team = async (req: any, res: Response) => {
     try {
-const loggedUser = req.loggedUser
+      const loggedUser = req.loggedUser
 
-      const team = await Team.find({institution:loggedUser.institution}).populate('role');
+      const team = req.loggedUser ? await Team.find({ institution: loggedUser.institution }) : await Team.find({ institution: req.api.inst });
       return res.status(200).json(team);
     } catch (error: any) {
       return res
@@ -41,9 +41,9 @@ const loggedUser = req.loggedUser
   };
   static teamAdmins = async (req: any, res: Response) => {
     try {
-   const loggedUser = req.loggedUser
-  
-      const admins= await Team.find({institution:loggedUser.institution, isAdmin:true}).populate('role');
+      const loggedUser = req.loggedUser
+
+      const admins = await Team.find({ institution: loggedUser.institution, isAdmin: true }).populate('role');
       return res.status(200).json(admins);
     } catch (error: any) {
       return res
@@ -83,7 +83,7 @@ const loggedUser = req.loggedUser
   static toggleAdmin = async (req: Request, res: Response) => {
     try {
       const id = req.params.id;
-      const member =await Team.findById(id);
+      const member = await Team.findById(id);
 
       if (!member) {
         return res.status(400).json({ message: "member does not exist" });
@@ -91,8 +91,8 @@ const loggedUser = req.loggedUser
       if (!member.active) {
         return res.status(400).json({ message: "member is not active" });
       }
-  
-      await Team.findByIdAndUpdate(id, {isAdmin:!member.isAdmin});
+
+      await Team.findByIdAndUpdate(id, { isAdmin: !member.isAdmin });
       res.status(200).json({ message: "status updated successfull" });
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} occured` });
@@ -150,7 +150,7 @@ const loggedUser = req.loggedUser
         return res.status(400).json({ message: "you did'nt attend to day " });
       }
       attendance.timeOut = new Date();
-      await attendance.save({timestamps:false});
+      await attendance.save({ timestamps: false });
       return res.status(200).json({ message: "thank you for coming" });
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} occured` });
@@ -186,7 +186,7 @@ const loggedUser = req.loggedUser
   static attendance = async (req: any, res: Response) => {
     try {
       const loggedUser = req.loggedUser
-      const attendance = await TeamAttendandance.find({institution:loggedUser.institution}).populate("memberId");
+      const attendance = await TeamAttendandance.find({ institution: loggedUser.institution }).populate("memberId");
       res.status(200).json(attendance);
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} occured` });
@@ -208,7 +208,7 @@ const loggedUser = req.loggedUser
   static forgotPassword = async (req: Request, res: Response) => {
     try {
       const { email } = req.body;
-      const member = await Team.findOne({ email,active:true });
+      const member = await Team.findOne({ email, active: true });
       if (!member) {
         return res
           .status(400)
@@ -218,7 +218,7 @@ const loggedUser = req.loggedUser
         id: member._id,
         email: member.email,
       });
-      const mailOptions = { 
+      const mailOptions = {
         from: process.env.OUR_EMAIL as string,
         to: member.email,
         subject: "Reset Admin Password",
@@ -259,7 +259,7 @@ const loggedUser = req.loggedUser
         { _id: user.id },
         { password: hashedPassword }
       );
-      
+
       return res.status(200).json({ message: "Password changed" });
     } catch (error: any) {
       return res
@@ -271,31 +271,31 @@ const loggedUser = req.loggedUser
   static login = async (req: Request, res: Response) => {
     try {
       const { email, password } = req.body;
-      const user = await Team.findOne({ email,active:true });
+      const user = await Team.findOne({ email, active: true });
       if (!user) {
         return res.status(401).json({ message: "Email not found or not active" });
       }
-      if(!user.isSuperAdmin){
-        const inst  = await Institution.findById(user.institution)
-      if(!inst ||!inst.verified){
-      return  res.status(401).json({message:"instituion not found"})
-      }
+      if (!user.isSuperAdmin) {
+        const inst = await Institution.findById(user.institution)
+        if (!inst || !inst.verified) {
+          return res.status(401).json({ message: "instituion not found" })
+        }
       }
 
       const isMatch = await comparePassword(password, user.password);
       if (!isMatch) {
         return res.status(401).json({ message: "Password does not match" });
       }
-      if(!user.isAdmin &&!user.isSuperAdmin){
-          const token = await generateToken({ _id: user._id ,isAdmin:user.isAdmin});
-          res.cookie("token", token as string, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === "production",
-            maxAge: 24 * 60 * 60 * 1000, 
-          });
-          return res
-            .status(200)
-            .json({ message: "Logged in successfully", token });
+      if (!user.isAdmin && !user.isSuperAdmin) {
+        const token = await generateToken({ _id: user._id, isAdmin: user.isAdmin });
+        res.cookie("token", token as string, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          maxAge: 24 * 60 * 60 * 1000,
+        });
+        return res
+          .status(200)
+          .json({ message: "Logged in successfully", token });
       }
 
       const OTP = generateRandom4Digit();
@@ -312,10 +312,10 @@ const loggedUser = req.loggedUser
             <p>Thank you!</p>
         `,
       };
-     user.phone? await sendMessage(`Hello, ${user.name} your login OTP  for futurefocus portal is ${OTP} `,[user?.phone]):''
+      user.phone ? await sendMessage(`Hello, ${user.name} your login OTP  for futurefocus portal is ${OTP} `, [user?.phone]) : ''
       await sendEmail(mailOptions);
 
-      return res.status(200).json({ message: "check your email for OTP ",id:user._id });
+      return res.status(200).json({ message: "check your email for OTP ", id: user._id });
     } catch (error: any) {
       return res
         .status(500)
@@ -346,20 +346,20 @@ const loggedUser = req.loggedUser
         return res.status(401).json({ message: "Incorrect OTP" });
       }
 
-          const token = await generateToken({
-            _id: user._id,
-            isAdmin: user.isAdmin,
-          });
-      res.cookie("token", token as string, { 
+      const token = await generateToken({
+        _id: user._id,
+        isAdmin: user.isAdmin,
+      });
+      res.cookie("token", token as string, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        maxAge: 24 * 60 * 60 * 1000, 
+        maxAge: 24 * 60 * 60 * 1000,
       });
       user.otp = null;
       await user.save();
       return res.status(200).json({ message: "Logged in successfully", token });
     } catch (error: any) {
-      return res 
+      return res
         .status(500)
         .json({ error: error.message || "Internal Server Error" });
     }
@@ -367,13 +367,13 @@ const loggedUser = req.loggedUser
   static getUser = async (req: any, res: Response) => {
     try {
       const loggedUser = req.loggedUser
-     
+
       const user = await Team.findById(loggedUser._id).populate({
-        path:'role',
-        populate:{
-          path:'permission',
-          populate:{
-           path:'feature'
+        path: 'role',
+        populate: {
+          path: 'permission',
+          populate: {
+            path: 'feature'
           }
         }
       }).populate('institution');
@@ -388,68 +388,68 @@ const loggedUser = req.loggedUser
         .json({ message: `Error occurred: ${error.message}` });
     }
   };
-  static addComment= async(req:Request,res:Response)=>{
-       const {id} = req.params;
-       const { comment } = req.body;
-  try {
-    
-    await TeamAttendandance.findByIdAndUpdate(id,{comment},{timestamps:false})
-        res.status(200).json({ message: "comment added" });
-    
-  } catch (error) {
-
-        res.status(500).json({ message: "internal server error" }); 
-    
-  }
-  }
-  static addresponse= async(req:Request,res:Response)=>{
-       const {id} = req.params;
-       const { response,phone } = req.body;
-  try {
-    
-  //  const member = await Team.findOne({})
-    await TeamAttendandance.findByIdAndUpdate(id,{response},{timestamps:false})
-    await sendMessage(` message from admin on your today attendance: ${response}`,[phone])
-        res.status(200).json({ message: "response added" });
-    
-  } catch (error) {
-        res.status(500).json({ message: "internal server error" }); 
-    
-  }
-  }
-  static activateMember= async(req:Request,res:Response)=>{
+  static addComment = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { comment } = req.body;
     try {
-      const {id} = req.params;
-      const member =await Team.findById(id)
-      if(!member){
-       return  res.status(400).json({ message: "member not found" }); 
+
+      await TeamAttendandance.findByIdAndUpdate(id, { comment }, { timestamps: false })
+      res.status(200).json({ message: "comment added" });
+
+    } catch (error) {
+
+      res.status(500).json({ message: "internal server error" });
+
+    }
+  }
+  static addresponse = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { response, phone } = req.body;
+    try {
+
+      //  const member = await Team.findOne({})
+      await TeamAttendandance.findByIdAndUpdate(id, { response }, { timestamps: false })
+      await sendMessage(` message from admin on your today attendance: ${response}`, [phone])
+      res.status(200).json({ message: "response added" });
+
+    } catch (error) {
+      res.status(500).json({ message: "internal server error" });
+
+    }
+  }
+  static activateMember = async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+      const member = await Team.findById(id)
+      if (!member) {
+        return res.status(400).json({ message: "member not found" });
 
       }
 
-      member.active=!member.active
+      member.active = !member.active
       await member.save()
-       return res.status(200).json({ message: "member uodated succesfull" }); 
+      return res.status(200).json({ message: "member uodated succesfull" });
     } catch (error) {
-        res.status(500).json({ message: "internal server error" }); 
-      
+      res.status(500).json({ message: "internal server error" });
+
     }
 
   }
-  static switchAttend= async(req:Request,res:Response)=>{
+  static switchAttend = async (req: Request, res: Response) => {
     try {
-      const {id} = req.params;
-      const member =await Team.findById(id)
-      if(!member){
-       return  res.status(400).json({ message: "member not found" }); 
+      const { id } = req.params;
+      const member = await Team.findById(id)
+      if (!member) {
+        return res.status(400).json({ message: "member not found" });
 
       }
 
-      member.attend=!member.attend
+      member.attend = !member.attend
       await member.save()
-       return res.status(200).json({ message: "member uodated succesfull" }); 
+      return res.status(200).json({ message: "member uodated succesfull" });
     } catch (error) {
-        res.status(500).json({ message: "internal server error" }); 
-      
+      res.status(500).json({ message: "internal server error" });
+
     }
 
   }

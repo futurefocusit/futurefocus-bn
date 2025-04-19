@@ -12,9 +12,10 @@ export class ServiceController {
         
     }
   };
-  static getAll = async(req:Request,res:Response)=>{
+  static getAll = async(req:any,res:Response)=>{
     try {
-       const services =  await Service.find()
+      const loggedUser = req.loggedUser
+       const services =req.loggedUser? await Service.find({institution:loggedUser.institution}): await Service.find({institution:req.api.inst})
        res.status(200).json(services)
 
         
