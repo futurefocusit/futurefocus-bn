@@ -2,10 +2,11 @@ import { Request, Response } from "express";
 import Service from "../models/Service";
 
 export class ServiceController {
-  static NewService = async(req:Request, res:Response) => {
+  static NewService = async(req:any, res:Response) => {
     const {title,subservices,icon}= req.body
     try {
-      await Service.create({title,subservices,icon})
+      const loggedUser = req.loggedUser
+      await Service.create({title,subservices,icon,institution:loggedUser.institution})
       res.status(200).json({message:"service Added"})
     } catch (error:any) {
         res.status(500).json({message:`Error ${error.message} Occured`})

@@ -19,7 +19,7 @@ export const indexRouter = Router()
 indexRouter.use("/others", othersRoute);
 indexRouter.use("/students", StudentRoutes);
 indexRouter.use("/member", TeamRoute);
-indexRouter.use("/service",isloggedIn, ServiceRoute);
+indexRouter.use("/service", ServiceRoute);
 indexRouter.use("/course", CourseRoute);
 indexRouter.use("/media", MediaRouter);
 indexRouter.use("/payment",isloggedIn, paymentRouter);

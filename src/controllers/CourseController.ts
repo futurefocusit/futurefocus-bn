@@ -24,19 +24,7 @@ export class CourseController {
       res.status(500).json({ message: `Error ${error.message} occured` });
     }
   };
-  static getAllByWebsite = async (req: Request, res: Response) => {
-    try {
-      const {website} = req.params
-      const inst = await Institution.findOne()
-      if(!inst){
-       return res.status(400).json({message:"can not find inst with this website"})
-      }
-      const courses = await Course.find().populate('shifts');
-      res.status(200).json(courses);
-    } catch (error: any) {
-      res.status(500).json({ message: `Error ${error.message} occured` });
-    }
-  };
+  
   static update = async (req: Request, res: Response) => {
     try {
       const courseId = req.params.id;

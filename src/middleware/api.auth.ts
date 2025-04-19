@@ -23,7 +23,7 @@ export const authenticateAPI = async (req: any, res: Response, next: NextFunctio
     // Attach to request for downstream use
     req.api = {
       apiId: apiRecord._id,
-      institution: apiRecord.inst
+      inst: apiRecord.inst
     };
 
     next();

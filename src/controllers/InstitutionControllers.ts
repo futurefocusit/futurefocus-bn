@@ -35,7 +35,7 @@ import generateSecret from "../utils/generateSecret"
         
                 const newInst = await Institution.create({ name, email, phone, logo });
         
-                const [permissions] = await Promise.all([Permission.find()]);
+                const [permissions] = await Promise.all([Permission.find()]); 
                 const role = await Role.create({ institution: newInst._id, role: "Admin", permission: permissions });
         
                 if (!role) {
@@ -56,7 +56,7 @@ import generateSecret from "../utils/generateSecret"
                 const newAPI = new API({
                     inst: newInst._id,
                     api_key: generateAPIKey(),
-                    api_name: generateAPIName(),
+                    api_name: name+" web API    ",
                     secret_key: generateSecret(),
                 });
         
