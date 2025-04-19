@@ -12,10 +12,9 @@ import { sendMessage } from "../utils/sendSms";
 import { MessageTemplate } from "../utils/messageBod";
 import mongoose, { ObjectId } from "mongoose";
 import { StudentTypes } from "../types/Types";
-import { Institution } from "../models/institution";
 
 export class StudentControllers {
-  static apply = async (req: Request, res: Response) => {
+  static apply = async (req: any, res: Response) => {
     const studentData:StudentTypes
      = req.body;
   
@@ -27,7 +26,7 @@ export class StudentControllers {
       }
       studentData.selectedCourse= studentData.selectedCourse as ObjectId
       studentData.selectedShift = studentData.selectedShift as ObjectId
-      studentData.institution = studentData.institution as ObjectId
+      studentData.institution =req.api.inst
 
       await Student.create(studentData);
       await sendMessage(

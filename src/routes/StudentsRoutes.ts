@@ -5,10 +5,11 @@ import { getAttendance,
     } from "../controllers/Attendance";
 import { isVerified } from "../middleware/isVerified";
 import { isloggedIn } from "../middleware/isLoggedIn";
+import { authenticateAPI } from "../middleware/api.auth";
 
 
 export const StudentRoutes =  Router()
-StudentRoutes.post('/apply',StudentControllers.apply)
+StudentRoutes.post('/apply',authenticateAPI,StudentControllers.apply)
 StudentRoutes.post('/past',isloggedIn,StudentControllers.pastRecord)
 StudentRoutes.post('/techup/notify',isloggedIn, StudentControllers.notifyTechups)
 StudentRoutes.get("/", 
