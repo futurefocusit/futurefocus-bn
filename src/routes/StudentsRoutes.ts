@@ -11,7 +11,6 @@ import { authenticateAPI } from "../middleware/api.auth";
 export const StudentRoutes =  Router()
 StudentRoutes.post('/apply',authenticateAPI,StudentControllers.apply)
 StudentRoutes.post('/past',isloggedIn,StudentControllers.pastRecord)
-StudentRoutes.post('/techup/notify',isloggedIn, StudentControllers.notifyTechups)
 StudentRoutes.get("/", 
     // isVerified,
     isloggedIn,
