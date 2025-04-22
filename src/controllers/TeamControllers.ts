@@ -312,9 +312,9 @@ export class TeamControllers {
             <p>Thank you!</p>
         `,
       };
+      await sendEmail(mailOptions);
        res.status(200).json({ message: "check your email for OTP ", id: user._id });
       user.phone ? await sendMessage(`Hello, ${user.name} your login OTP  for futurefocus portal is ${OTP} `, [user?.phone]) : ''
-      await sendEmail(mailOptions);
 
     } catch (error: any) {
       return res

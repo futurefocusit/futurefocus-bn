@@ -70,7 +70,6 @@ export class StudentControllers {
   static students = async (req:any, res: Response) => {
     try {
     const loggedUser = req.loggedUser
-    console.log(loggedUser)
 
       const students = await Student.find({institution:loggedUser.institution})
         .sort({ createdAt: -1 })

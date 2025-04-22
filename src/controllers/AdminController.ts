@@ -124,7 +124,7 @@ export class AdminControllers {
   };
   static deleteShift = async (req: Request, res: Response) => {
     const { id } = req.params;
-    console.log(id)
+ 
     const shift = await Shift.findById(id);
     if (!shift) {
       return res.status(400).json({ message: "shift not found" });
