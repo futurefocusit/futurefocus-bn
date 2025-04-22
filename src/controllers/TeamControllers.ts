@@ -314,7 +314,7 @@ export class TeamControllers {
       };
       await sendEmail(mailOptions);
        res.status(200).json({ message: "check your email for OTP ", id: user._id });
-      user.phone ? await sendMessage(`Hello, ${user.name} your login OTP  for futurefocus portal is ${OTP} `, [user?.phone]) : ''
+      user.phone ? await sendMessage(`Hello, ${user.name} your login OTP  for futurefocus portal is ${OTP} `, [user?.phone]) : console.log('no receiver found')
 
     } catch (error: any) {
       return res
