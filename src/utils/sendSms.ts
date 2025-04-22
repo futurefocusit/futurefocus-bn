@@ -31,7 +31,7 @@ export const sendMessage = async (message: string, recipients: [string]) => {
 
     }
   } catch (error) {
-
+console.log(error)
   }
 };
 
