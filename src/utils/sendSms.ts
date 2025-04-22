@@ -1,5 +1,6 @@
 import axios from "axios";
 import dotenv from 'dotenv'
+import { HttpsProxyAgent } from "https-proxy-agent";
 dotenv.config()
 
 export interface smsInterface {
@@ -18,6 +19,7 @@ export const sendMessage = async (message: string, recipients: [string]) => {
       headers: {
         "Content-Type": "application/json",
       },
+      httpsAgent:new HttpsProxyAgent('https://server.futurefocus.co.rw/')
     });
 
     const responseData = response.data;
