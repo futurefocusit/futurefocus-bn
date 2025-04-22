@@ -64,6 +64,12 @@ export class PaymentController {
         status: payment.status,
         paymentMethod: method
       };
+     
+
+      res.status(200).json({
+        message: `You have successfully paid school fees of ${amount}`,
+        data,
+      });
       await sendMessage(
         MessageTemplate({
           name: student.name,
@@ -72,11 +78,6 @@ export class PaymentController {
         }).pay,
         [student.phone.toString()]
       );
-
-      res.status(200).json({
-        message: `You have successfully paid school fees of ${amount}`,
-        data,
-      });
     } catch (error: any) {
       res.status(500).json({ message: `Error: ${error.message} occurred` });
     }
@@ -151,11 +152,7 @@ export class PaymentController {
           .status(400)
           .json({ message: "no payment record for that user" });
       }
-      // if (payment.amountDiscounted && payment.amountDiscounted > 0) {
-      //   return res
-      //     .status(400)
-      //     .json({ message: "you can't add extra and dicount at same time" });
-      // }
+
       payment.extraAmount = payment.extraAmount
         ? payment.extraAmount + amount
         : amount;
@@ -177,11 +174,7 @@ export class PaymentController {
           .status(400)
           .json({ message: "no payment record for that user" });
       }
-      // if (payment.extraAmount && payment.extraAmount > 0) {
-      //   return res
-      //     .status(400)
-      //     .json({ message: "you can't add extra and dicount at same time" });
-      // }
+
       payment.amountDiscounted = payment.amountDiscounted
         ? payment.amountDiscounted + amount
         : amount;

@@ -16,7 +16,7 @@ import generateSecret from "../utils/generateSecret"
     export class InstitutionControllers { 
         static register = async (req: Request, res: Response) => {
             try {
-                const { name, email, phone } = req.body;
+                const { name, email, phone,logo } = req.body;
         
                 const [inst, adm] = await Promise.all([
                     Institution.findOne({ $or: [{ email }, { phone }] }),
@@ -27,11 +27,11 @@ import generateSecret from "../utils/generateSecret"
                     return res.status(400).json({ message: "Institution or Admin already exists" });
                 }
         
-                if (!req.file) {
-                    return res.status(400).json({ message: "Please upload your logo" });
-                }
+                // if (!req.file) {
+                //     return res.status(400).json({ message: "Please upload your logo" });
+                // }
         
-                const logo = req.file.path;
+                // const logo = req.file.path;
         
                 const newInst = await Institution.create({ name, email, phone, logo });
         

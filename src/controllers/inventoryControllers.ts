@@ -35,7 +35,6 @@ const loggedUser = req.loggedUser
     try {
   for (const item of items) {
     await MaterialRent.create({
-      //@ts-expect-error populated item
       materialId: item._id,
       amount: item.amount,
       returnDate: returnDate,
@@ -44,7 +43,6 @@ const loggedUser = req.loggedUser
       institution:loggedUser.institution,
       cost,
     });
-      //@ts-expect-error populated item
     await Material.findByIdAndUpdate(item._id, { $inc: { rent: item.amount } });
   }
   res.status(200).json({ message: "successfully rented item" });
@@ -53,14 +51,14 @@ const loggedUser = req.loggedUser
   res.status(500).json({ message: "internal server error" });
 }
   }
-  static returnMaterial = async (req: Request, res: Response) => {
-    const {receiver} = req.body;  
+  static returnMaterial = async (req: any, res: Response) => {
+    // const {receiver} = req.body;  
     const {id} = req.params;
     try {
     const material=  await MaterialRent.findByIdAndUpdate(id, {
         returnedDate: new Date(),
         returned: true,
-        receiver,  
+        receiver:req.loggedUser._id,  
       });
       if(!material){
         return res.status(400).json({message:"no Rent found"})  

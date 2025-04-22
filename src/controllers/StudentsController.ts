@@ -206,10 +206,10 @@ export class StudentControllers {
   //   }
   // };
   static registerNew = async (req: any, res: Response) => {
-    const session = await mongoose.startSession()
+    // const session = await mongoose.startSession()
     const student = req.body;
     const loggedUser = req.loggedUser
-    session.startTransaction()
+    // session.startTransaction()
 
     try {
       const course = await Course.findById(student.selectedCourse );
@@ -245,19 +245,19 @@ export class StudentControllers {
         type: "income",
       });
       await registerStudent.save();
-      await session.commitTransaction()
+      // await session.commitTransaction()
+      res.status(201).json({ message: "new student registered" });
       await sendMessage(
         MessageTemplate({
           name: student.name,
         }).register,
         [student.phone]
       );
-      res.status(201).json({ message: "new student registered" });
     } catch (error: any) {
-      await session.abortTransaction()
+      // await session.abortTransaction()
       res.status(500).json({ message: `Error ${error.message} occured` });
     }finally{
-      session.endSession()
+      // session.endSession()
     }
   };
   static Update = async (req: Request, res: Response) => {

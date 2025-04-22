@@ -6,7 +6,7 @@ const connection = async () => {
       serverSelectionTimeoutMS: 30000,
     });
     console.log("database connected successfully");
-  } catch (error) {
+  } catch (error) { 
     console.log("Failed to connect", error);
   }
 };

@@ -10,6 +10,7 @@ interface IMaterial {
   rent: number;
 }
 export interface IMaterialRent {
+  _id?:ObjectId,
   institution:ObjectId
   materialId: ObjectId;
   render: ObjectId;
