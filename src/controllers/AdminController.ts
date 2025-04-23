@@ -70,7 +70,8 @@ export class AdminControllers {
   static getIntakes = async (req: any, res: Response) => {
     try {
     const loggedUser = req.loggedUser
-      const intakes = await Intake.find({institution:loggedUser.institution});
+    const intakes =loggedUser? await Intake.find({institution:loggedUser.institution}):await Intake.find({institution:req.api.inst});
+
       res.status(200).json({ intakes });
     } catch (error) {
       res.status(500).json({ message: "failed to load intakes" });
@@ -93,26 +94,13 @@ export class AdminControllers {
     try {
 
     const loggedUser = req.loggedUser
-      const shifts = await Shift.find({institution:loggedUser.institution});
+      const shifts =loggedUser? await Shift.find({institution:loggedUser.institution}):await Shift.find({institution:req.api.inst});
       res.status(200).json({ shifts });
     } catch (error) {
       res.status(500).json({ message: "failed to load shifts" });
     }
   };
-  static getShiftsByWebsite = async (req: any, res: Response) => {
-    try {
-
-      const {website} = req.params
-      const inst = await Institution.findOne({website})
-      if(!inst){
-       return res.status(400).json({message:"can not find inst with this website"})
-      }
-      const shifts = await Shift.find();
-      res.status(200).json({ shifts });
-    } catch (error) {
-      res.status(500).json({ message: "failed to load shifts" });
-    }
-  };
+  
   static deleteIntake = async (req: Request, res: Response) => {
     const { id } = req.params;
     const intake = await Intake.findById(id);

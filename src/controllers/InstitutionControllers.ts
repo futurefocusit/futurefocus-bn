@@ -10,7 +10,6 @@ import Role from "../models/role"
 import Permission from "../models/Permission"
 import API from "../models/API"
 import generateAPIKey from "../utils/generateAPIKey"
-import generateAPIName from "../utils/generateAPIName"
 import generateSecret from "../utils/generateSecret"
 
     export class InstitutionControllers { 

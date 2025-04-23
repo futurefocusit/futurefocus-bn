@@ -8,6 +8,6 @@ const InstitutionSchema = new Schema<InstitutionTypes>({
   phone: { type: Number, required: true },
   logo:{type:String},
   verified:{type:Boolean,required:true, default:false},
-  website:{type:String}
+  website:{type:String},
 },{timestamps:true});
 export const Institution = model<InstitutionTypes>("Institution",InstitutionSchema)

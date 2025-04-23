@@ -2,3 +2,5 @@
 .env
 dist
 dump
+logs
+/src/deleyteController.ts

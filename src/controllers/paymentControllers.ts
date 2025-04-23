@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import Payment from "../models/payment";
 import Transaction from "../models/Transaction";
-import Cashflow from "../models/otherTransactions";
+import Cashflow from "../models/cashFlow";
 import Student from "../models/Students";
 import { sendMessage } from "../utils/sendSms";
 import { MessageTemplate } from "../utils/messageBod";
@@ -64,7 +64,7 @@ export class PaymentController {
         status: payment.status,
         paymentMethod: method
       };
-     
+
 
       res.status(200).json({
         message: `You have successfully paid school fees of ${amount}`,

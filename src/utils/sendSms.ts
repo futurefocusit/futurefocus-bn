@@ -18,8 +18,8 @@ export const sendMessage = async (message: string, recipients: [string]) => {
     }, {
       headers: {
         "Content-Type": "application/json",
-      },
-      httpsAgent:new HttpsProxyAgent('https://server.futurefocus.co.rw/')
+      }
+      
     });
 
     const responseData = response.data;

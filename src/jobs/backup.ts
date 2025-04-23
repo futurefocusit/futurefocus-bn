@@ -17,12 +17,10 @@ export const backup = async () => {
     try {
       console.log("Running MongoDB backup...");
 
-      // Ensure backup directory exists
       if (!fs.existsSync(backupDir)) {
         fs.mkdirSync(backupDir, { recursive: true });
       }
 
-      // Create MongoDB dump
       const dumpCommand = `mongodump --uri ${process.env.MONGODB_URI} --out ${backupDir}`;
       await execAsync(dumpCommand);
       console.log("MongoDB backup created successfully.");

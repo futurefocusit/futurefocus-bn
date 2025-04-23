@@ -36,7 +36,7 @@ app.use("/api/v1", indexRouter);
 
 app.listen(PORT, async() => {
 await connection();
-// await  realTimeBackup();
+await  realTimeBackup();
   console.log(`App is listening at http://localhost:${PORT}`);
  
 });

@@ -35,7 +35,7 @@ export const teamAttendance = () => {
         });
       }
     } catch (error) {
-      console.error("ErrSor in dailyAttendance:", error);
+      console.error("Error in dailyAttendance:", error);
     }
   });
 };

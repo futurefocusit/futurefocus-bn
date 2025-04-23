@@ -1,27 +1,26 @@
 import mongoose from "mongoose";
 import connection from "./db";
-const { MongoClient } = require("mongodb");
-
-const uri = "mongodb://localhost:27017/?replicaSet=rs0";
+import  { MongoClient } from "mongodb"
+import dotenv from 'dotenv'
+dotenv.config()
 const sourceDbName = "ffa";
 const backupDbName = "backupdb";
 
 export const realTimeBackup = async () => {
   try {
-    await connection(); // your mongoose connection wrapper
+    await connection(); 
 
     if (!mongoose.connection.db) {
       console.log("❌ Could not find source DB");
       return;
     }
 
-    const backupClient = new MongoClient(uri);
+    const backupClient = new MongoClient(process.env.MONGODB_URI_BACKUP as string);
     await backupClient.connect();
     console.log("✅ MongoClient connected to backupdb");
 
     const backupDb = backupClient.db(backupDbName);
 
-    // Watch all collections in the DB
     const changeStream = mongoose.connection.db.watch([], {
       fullDocument: "updateLookup",
     });
@@ -29,12 +28,13 @@ export const realTimeBackup = async () => {
     console.log(`🔍 Watching all collections in DB "${sourceDbName}"...`);
 
     changeStream.on("change", async (change) => {
-        //@ts-expect-error error
-      const collectionName = change.ns.coll; // dynamic collection name
+      //@ts-ignore
+      const collectionName = change.ns.coll; 
       if (!collectionName) return;
 
-      const backupColl = backupDb.collection(collectionName); // backup to same-named collection
-          //@ts-ignore
+      const backupColl = backupDb.collection(collectionName);
+
+      //@ts-ignore
       const backupDoc = change.fullDocument
 
        backupColl.insertOne(backupDoc).then(()=>{
