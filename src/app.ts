@@ -4,16 +4,21 @@ import dotenv from "dotenv";
 import cors from "cors";
 import { dailyAttendance, teamAttendance } from "./jobs/AttendanceAutomation";
 import { indexRouter } from "./routes/indexRoutes";
-import { backup } from "./jobs/backup";
-import { realTimeBackup } from "./config/realtime.backup";
+// import { backup } from "./jobs/backup";
+// import { realTimeBackup } from "./config/realtime.backup";
+import http from 'http';
+import mongoose from 'mongoose';
 
 dotenv.config();
 
-const PORT = process.env.PORT || 5000; 
+const PORT = process.env.PORT || 5000;
 const app = express();
-const allowedOrigins = process.env.CORS_ALLOW   
+const server = http.createServer(app);
+const allowedOrigins = process.env.CORS_ALLOW
   ? process.env.CORS_ALLOW.split(",")
-  : ["https://futurefocus.co.rw","https://xcool.com"]; 
+  : ["https://futurefocus.co.rw", "https://xcool.com"];
+
+// Initialize WebSocket service
 
 app.use(
   cors({
@@ -27,18 +32,28 @@ app.use(
 app.use(express.json());
 dailyAttendance();
 teamAttendance();
-backup()
 
 app.get("/", (req, res) => {
   res.send("Welcome to Future Focus");
 });
+
 app.use("/api/v1", indexRouter);
 
-app.listen(PORT, async() => {
-await connection();
-await  realTimeBackup();
+app.listen(PORT, async () => {
+  await connection();
   console.log(`App is listening at http://localhost:${PORT}`);
- 
+});
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('SIGTERM received. Shutting down gracefully...');
+  server.close(() => {
+    console.log('Server closed');
+    mongoose.connection.close().then(() => {
+      console.log('MongoDB connection closed');
+      process.exit(0);
+    });
+  });
 });
 
 export default app;

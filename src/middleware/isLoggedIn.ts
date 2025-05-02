@@ -11,13 +11,13 @@ export const isloggedIn = async (req: any, res: Response,next:NextFunction) => {
         return res.status(401).json({ message: "token not found" });
       }
       
-
-      const id = await decodeToken(token)._id;
+        
+      const decoded = await decodeToken(token)
       
-      if (!id) {
+      if (!decoded) {
         return res.status(401).json({ message: "user not authenticated" });
       }
-      const user = await Team.findById(id);
+      const user = await Team.findById(decoded._id);
       if (!user) {
         return res.status(401).json({ message: "user not found" });
       }

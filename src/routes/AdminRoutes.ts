@@ -8,6 +8,7 @@ import { isVerified } from "../middleware/isVerified";
 import { authenticateAPI } from "../middleware/api.auth";
 
 export const othersRoute = Router()
+othersRoute.get('/super', isloggedIn, AdminControllers.superAdmin)
 othersRoute.post('/subscribe', AdminControllers.subscribe)
 othersRoute.post('/intake',isloggedIn,  AdminControllers.addIntake)
 othersRoute.get('/intake', isloggedIn, AdminControllers.getIntakes)

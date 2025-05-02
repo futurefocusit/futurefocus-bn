@@ -13,32 +13,28 @@ export const backup = async () => {
     const now = new Date();
     return now.toISOString().split("T")[0];
   };
-  cron.schedule("41 16 * * *", async () => {
+  // cron.schedule("41 16 * * *", async () => {
     try {
       console.log("Running MongoDB backup...");
 
       if (!fs.existsSync(backupDir)) {
         fs.mkdirSync(backupDir, { recursive: true });
-      }
+      } 
 
       const dumpCommand = `mongodump --uri ${process.env.MONGODB_URI} --out ${backupDir}`;
       await execAsync(dumpCommand);
       console.log("MongoDB backup created successfully.");
 
-      // Get timestamp for the current backup
       const timestamp = getTimestamp();
       const backupName = `backup-${timestamp}`;
 
-      // First, list existing backups in Mega
       const listCommand = `rclone lsf mega:/mongodb-backups/`;
       const { stdout: existingBackups } = await execAsync(listCommand);
 
-      // Upload new backup
       const uploadCommand = `rclone copy ${backupDir} mega:/mongodb-backups/${backupName}`;
       await execAsync(uploadCommand);
       console.log(`Backup successfully uploaded to Mega as ${backupName}`);
 
-      // Delete old backups (keep last 7 days)
       const backupsList = existingBackups.split("\n").filter(Boolean);
       const keepDays = 7;
 
@@ -62,7 +58,7 @@ export const backup = async () => {
         fs.rmSync(backupDir, { recursive: true, force: true });
       }
     }
-  });
+  // });
 
   console.log(
     "Cron job scheduled. The MongoDB backup will run at 12:04 PM daily."

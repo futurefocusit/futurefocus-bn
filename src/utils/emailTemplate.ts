@@ -1,7 +1,5 @@
-
-
 export const resetTemplates = (user: any, token: any) => {
-  return `<!DOCTYPE html>
+    return `<!DOCTYPE html>
   <html>
   <head>
       <meta charset="UTF-8">
@@ -59,7 +57,7 @@ export const resetTemplates = (user: any, token: any) => {
 };
 
 export const staffResetTemplates = (user: any, token: any) => {
-  return `<!DOCTYPE html>
+    return `<!DOCTYPE html>
   <html>
   <head>
       <meta charset="UTF-8">
@@ -116,7 +114,7 @@ export const staffResetTemplates = (user: any, token: any) => {
   </html>`;
 };
 export const SubscriptionEmail = () => {
-  return `<!DOCTYPE html>
+    return `<!DOCTYPE html>
   <html>
   <head>
       <meta charset="UTF-8">
@@ -171,8 +169,8 @@ export const SubscriptionEmail = () => {
   </body>
   </html>`;
 };
-export const notifyInstuEmail = (name:string)=>{
-    return`
+export const notifyInstuEmail = (name: string) => {
+    return `
 
     <!DOCTYPE html>
 <html lang="en">
@@ -261,8 +259,8 @@ export const notifyInstuEmail = (name:string)=>{
 
     `
 }
-export const notifyInstuVerificationEmail = (name:string)=>{
-    return`
+export const notifyInstuVerificationEmail = (name: string) => {
+    return `
 
     <!DOCTYPE html>
 <html lang="en">
@@ -353,3 +351,28 @@ export const notifyInstuVerificationEmail = (name:string)=>{
 
     `
 }
+
+export const SubscriptionExpiryEmail = (institutionName: string, gracePeriodDays: number) => {
+    if (gracePeriodDays > 0) {
+        return `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <h2>Subscription Expiry Notice</h2>
+      <p>Dear ${institutionName},</p>
+      <p>Your subscription has expired, but you have entered a ${gracePeriodDays}-day grace period.</p>
+      <p>During this grace period, you can still access the system, but we recommend renewing your subscription as soon as possible.</p>
+      <p>If you have any questions or need assistance, please contact our support team.</p>
+      <p>Best regards,<br>Future Focus Team</p>
+    </div>
+  `;
+    } else {
+        return `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <h2>Subscription Expired</h2>
+      <p>Dear ${institutionName},</p>
+      <p>Your subscription and grace period have ended. To continue using our services, please renew your subscription.</p>
+      <p>If you have any questions or need assistance, please contact our support team.</p>
+      <p>Best regards,<br>Future Focus Team</p>
+    </div>
+  `;
+    }
+};

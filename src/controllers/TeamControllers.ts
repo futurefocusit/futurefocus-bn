@@ -7,6 +7,7 @@ import { comparePassword, hashingPassword } from "../utils/PasswordUtils";
 import { generateRandom4Digit } from "../utils/generateRandomNumber";
 import { sendMessage } from "../utils/sendSms";
 import { Institution } from "../models/institution";
+import { Access } from "../models/Access";
 
 
 export class TeamControllers {
@@ -313,7 +314,7 @@ export class TeamControllers {
         `,
       };
       await sendEmail(mailOptions);
-       res.status(200).json({ message: "check your email for OTP ", id: user._id });
+      res.status(200).json({ message: "check your email for OTP ", id: user._id });
       user.phone ? await sendMessage(`Hello, ${user.name} your login OTP  for futurefocus portal is ${OTP} `, [user?.phone]) : console.log('no receiver found')
 
     } catch (error: any) {
@@ -368,20 +369,37 @@ export class TeamControllers {
     try {
       const loggedUser = req.loggedUser
 
-      const user = await Team.findById(loggedUser._id).populate({
-        path: 'role',
-        populate: {
-          path: 'permission',
+      const [user, access] = await Promise.all([
+        Team.findById(loggedUser._id).populate({
+          path: 'role',
           populate: {
-            path: 'feature'
+            path: 'permission',
+            populate: {
+              path: 'feature'
+            }
           }
-        }
-      }).populate('institution');
+        }).populate('institution'),
+        Access.findOne({ institution: loggedUser.institution })
+      ]);
+
       if (!user) {
         res.status(401).json({ message: "user not found" });
       }
 
-      return res.status(200).json(user);
+      // Add access features to the institution object
+      //@ts-ignore
+      const userObj = user?.toObject();
+      if (userObj?.institution) {
+        //@ts-ignore  
+        userObj.institution.access = access || {
+          features: [],
+          active: false,
+          duration: null,
+          subscriptionEnd: null
+        };
+      }
+
+      return res.status(200).json(userObj);
     } catch (error: any) {
       return res
         .status(500)

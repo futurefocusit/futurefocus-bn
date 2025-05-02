@@ -59,7 +59,7 @@ export interface ServiceTypes extends Document {
 }
 
 export interface CourseTypes extends Document {
-  institution:ObjectId,
+  institution: ObjectId,
   title: string;
   description: string;
   rating: number;
@@ -69,15 +69,15 @@ export interface CourseTypes extends Document {
   nonScholarship: number;
   shifts: ObjectId[];
 }
-export  interface socialMedias{
-  web:string,
-  link:string
+export interface socialMedias {
+  web: string,
+  link: string
 
 }
 export interface Contact extends Document {
   location: [string];
   socialMedias: [socialMedias];
-  contact:[number];
+  contact: [number];
   emails: [string];
 
 
@@ -125,34 +125,47 @@ export interface PermissionTypes {
 }
 export interface InstitutionTypes {
   institution: ObjectId;
-  isSuperInst:boolean
+  isSuperInst: boolean
   name: string;
   logo: string;
   email: string;
   phone: number;
   verified: boolean;
-  website:string
+  website: string
 }
-export interface AccessPaymentTypes{
-  institution:ObjectId
-  amount:number
+export interface AccessPaymentTypes {
+  institution: ObjectId;
+  amount: number;
+  duration: number;
+  features: {
+    feature: ObjectId;
+    duration: number;
+  }[];
+  status: "pending" | "completed" | "failed";
 }
-export interface Ifeature{
-feature:Types.ObjectId
-
-active:boolean
-lastUpdated?:Date
-dueDate:number
+export interface Ifeature {
+  feature: Types.ObjectId;
+  active: boolean;
+  lastUpdated?: Date;
+  dueDate: number;
 }
-export interface accesstypes{
-  institution:ObjectId,
-  active:boolean
-  duration:Number
-  features:Ifeature[]
+export interface accesstypes {
+  institution: ObjectId;
+  subscriptionEnd: Date;
+  features: {
+    feature: ObjectId;
+    active: boolean;
+    lastUpdated?: Date;
+    expiresAt: Date;
+  }[];
+  status: "active" | "expired" | "grace_period";
+  gracePeriodEnd?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
-export interface IAPI{
-  inst:ObjectId,
-  api_name:string,
-  api_key:string
-  secret_key:string
+export interface IAPI {
+  inst: ObjectId;
+  api_name: string;
+  api_key: string;
+  secret_key: string;
 }
