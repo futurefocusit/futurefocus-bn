@@ -136,7 +136,7 @@ export class AdminControllers {
     const loggedUser = req.loggedUser
     intake.institution = loggedUser.institution
     try {
-      const isAvailable = await Intake.findOne({ intake: intake.intake });
+      const isAvailable = await Intake.findOne({ intake: intake.intake,institution:loggedUser.institution });
       if (isAvailable) {
         return res.status(400).json({ message: "intake already available" });
       }
