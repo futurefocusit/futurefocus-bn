@@ -4,7 +4,7 @@ const connection = async () => {
   try { 
     await mongoose.connect(process.env.MONGODB_URI as string,{
       serverSelectionTimeoutMS: 30000,
-      dbName:"ffa" 
+      dbName:"xcool" 
       
     });
     console.log("database connected successfully");
