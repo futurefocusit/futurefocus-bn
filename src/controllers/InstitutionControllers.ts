@@ -12,6 +12,7 @@ import API from "../models/API"
 import generateAPIKey from "../utils/generateAPIKey"
 import generateSecret from "../utils/generateSecret"
 import mongoose from "mongoose"
+import { hashingPassword } from "../utils/PasswordUtils"
 
 export class InstitutionControllers {
     static register = async (req: Request, res: Response) => {
@@ -19,7 +20,7 @@ export class InstitutionControllers {
         session.startTransaction();
 
         try {
-            const { name, email, phone, logo } = req.body;
+            const { name, email, phone, logo,password } = req.body;
 
             // Check for existing institution or admin in parallel
             const [inst, adm] = await Promise.all([
@@ -61,6 +62,7 @@ export class InstitutionControllers {
                 phone,
                 isAdmin: true,
                 image: logo.url,
+                password: await hashingPassword(password),
                 position: "Admin",
             }], { session });
 
