@@ -14,9 +14,13 @@ import { inventoryRouter } from "./inventoryRoutes";
 import { InstitutionRouter } from "./Institution";
 import { isloggedIn } from "../middleware/isLoggedIn";
 import subscriptionRouter from "./subscriptionRouter";
+import uploadSingle from "rod-fileupload";
+import cloudinary from "../config/multer";
+import UploadRouter from "./upload";
 
 
 export const indexRouter = Router()
+indexRouter.use('/upload',isloggedIn,UploadRouter)
 indexRouter.use("/others", othersRoute);
 indexRouter.use("/students", StudentRoutes);
 indexRouter.use("/member", TeamRoute);

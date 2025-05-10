@@ -20,7 +20,8 @@ export class TeamControllers {
       if (isExist) {
         return res.status(400).json({ message: "member already exist" });
       }
-      await Team.create({ name, title, image, email, position, instagram, institution: loggedUser.institution });
+      const password= await hashingPassword('000000')
+      await Team.create({ name, title, image, email, position, instagram, password, institution: loggedUser.institution });
       return res.status(200).json({ messsage: "member added" });
     } catch (error: any) {
       return res
@@ -279,7 +280,7 @@ export class TeamControllers {
       if (!user.isSuperAdmin) {
         const inst = await Institution.findById(user.institution)
         if (!inst || !inst.verified) {
-          return res.status(401).json({ message: "instituion not found" })
+          return res.status(401).json({ message: "instituion not found or not verified" })
         }
       }
 

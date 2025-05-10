@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
+import mongoose from "mongoose"; 
   
-const connection = async () => {
+const  connection = async () => {    
   try { 
     await mongoose.connect(process.env.MONGODB_URI as string,{
       serverSelectionTimeoutMS: 30000,

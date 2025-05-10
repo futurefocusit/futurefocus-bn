@@ -61,6 +61,8 @@ export const commentSchema = new Schema<CommentTypes>({
       ref: "Reply",
     },
   ],
+},{
+  timestamps: true,
 });
 export const Comment = model<CommentTypes>("Comment", commentSchema);
 
@@ -78,5 +80,7 @@ export const replySchema = new Schema<ReplyTypes>({
     type: Schema.Types.ObjectId,
     ref: "Comment",
   },
+},{
+  timestamps: true,
 });
 export const Reply = model<ReplyTypes>("Reply", replySchema);

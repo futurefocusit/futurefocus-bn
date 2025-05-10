@@ -1,15 +1,14 @@
 import mongoose from "mongoose";
 import connection from "./db";
-import  { MongoClient } from "mongodb"
+import  { MongoClient } from "mongodb" 
 import dotenv from 'dotenv'
 dotenv.config()
-const sourceDbName = "ffa";
+const sourceDbName = "ffa";   
 const backupDbName = "backupdb"; 
 
 export const realTimeBackup = async () => {
   try {
     await connection(); 
-
     if (!mongoose.connection.db) {
       console.log("❌ Could not find source DB");
       return;
