@@ -337,8 +337,9 @@ export class TeamControllers {
 
       if (!user) {
         return res.status(401).json({ message: "user not found" });
-      }
-      if (!user.isAdmin) {
+      } 
+
+      if (!user.isAdmin && !user.isSuperAdmin) {
         return res.status(401).json({ message: "only admin allowed" });
       }
       if (!user.otp) {
@@ -359,7 +360,7 @@ export class TeamControllers {
       });
       user.otp = null;
       await user.save();
-      return res.status(200).json({ message: "Logged in successfully", token });
+      return res.status(200).json({ message: "Logged in successfully", token, user });
     } catch (error: any) {
       return res
         .status(500)
