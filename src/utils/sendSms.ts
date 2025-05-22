@@ -22,16 +22,16 @@ export const sendMessage = async (message: string, recipients: [string]) => {
       
     // });
 
-    const responseData = response.data;
-    const status = responseData.status;
-    console.log(response.data)
+    // const responseData = response.data;
+    // const status = responseData.status;
+    // console.log(response.data)
 
-    if (status === 200) {
-      const message = responseData.message;
+    // if (status === 200) {
+    //   const message = responseData.message;
 
-    } else {
+    // } else {
 
-    }
+    // }
   } catch (error) {
 console.log(error)
   }

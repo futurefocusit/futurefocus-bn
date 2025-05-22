@@ -141,19 +141,19 @@ export class StudentControllers {
         );
 
       }
-      else if (status === 'accepted') {
-        await sendMessage(
-          MessageTemplate({
-            name: student.name,
-            amount: 0,
-            remain: 0,
-            //@ts-expect-error populated course
-            course: student.selectedCourse.name,
-          }).admit,
-          [student.phone.toString()]
-        );
+      // else if (status === 'accepted') {
+      //   await sendMessage(
+      //     MessageTemplate({
+      //       name: student.name,
+      //       amount: 0,
+      //       remain: 0,
+      //       //@ts-expect-error populated course
+      //       course: student.selectedCourse.name,
+      //     }).admit,
+      //     [student.phone.toString()]
+      //   );
 
-      }
+      // }
 
       res.status(200).json({ message: `student new status ${status}` });
     } catch (error: any) {
