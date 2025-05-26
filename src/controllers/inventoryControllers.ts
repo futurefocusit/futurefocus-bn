@@ -138,7 +138,7 @@ const loggedUser = req.loggedUser
   static deleteInventory = async (req: Request, res: Response) => {
     const { id } = req.params;
     try {
-      const deletedInventory = await Inventory.findByIdAndDelete(id);
+      const deletedInventory = await Material.findByIdAndDelete(id);
       if (!deletedInventory) {
         return res.status(404).json({ message: "Inventory not found" });
       }

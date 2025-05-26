@@ -4,7 +4,7 @@ import { Attendance } from "../models/Attendance";
 import Team, { TeamAttendandance } from "../models/Team";
 
 export const dailyAttendance = () => {
-  cron.schedule("25 6 * * 1-6", async () => {
+  cron.schedule("11 22 * * 1-7", async () => {
     try {
       const today = new Date();
       let dayNumber = today.getDay();
@@ -12,10 +12,11 @@ export const dailyAttendance = () => {
         status: "started",
       }).populate('selectedShift');
       for (const student of students) {
-        //@ts-ignore
+        //@ts-expect-error error
        if(student.selectedShift.days.includes(dayNumber+1)){
          await Attendance.create({
            studentId: student._id,
+           institution:student.institution
          });
        }
       }
@@ -26,12 +27,14 @@ export const dailyAttendance = () => {
   });
 };
 export const teamAttendance = () => {
-  cron.schedule("0 6 * * 1-6", async () => {
+  cron.schedule("11 22 * * 1-7", async () => {
     try {
       const members = await Team.find({active:true,attend:true});
       for (const member of members) {
         await TeamAttendandance.create({
           memberId: member._id,
+           institution:member.institution
+
         });
       }
     } catch (error) {

@@ -21,7 +21,7 @@ const Intake = model<IIntake>("intake", IntakeSchema);
 
 export default Intake;
 
-interface IShift {
+export interface IShift {
   institution:ObjectId
   days:string
   name:string

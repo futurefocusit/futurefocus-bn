@@ -61,7 +61,13 @@ export const updateAttendance = async (req: Request, res: Response) => {
 export const getAttendance = async (req:any,res:Response)=>{
   try {
     const loggedUser = req.loggedUser
-    const attendance = await Attendance.find({institution:loggedUser.institution}).populate("studentId");
+    const attendance = await Attendance.find({ institution: loggedUser.institution })
+  .populate({
+    path: "studentId",
+    populate: {
+      path: "selectedShift" // Assuming selectedShift is a ref inside the Student model
+    }
+  });
     res.status(200).json(attendance)
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
