@@ -13,30 +13,31 @@ const allowedLocation: Location = {
 };
 export const TeamRoute = Router()
 TeamRoute.post("/two-factor/:id", TeamControllers.verifyOTP);
-TeamRoute.post("/new",isloggedIn,TeamControllers.AddMember)
-TeamRoute.get("/",isloggedIn,TeamControllers.Team)
-TeamRoute.get("/admins",isloggedIn,TeamControllers.teamAdmins)
-TeamRoute.delete("/delete/:id",isloggedIn,TeamControllers.deleteMember)
-TeamRoute.put("/update/:id",isloggedIn,TeamControllers.update)
+TeamRoute.post("/new", isloggedIn, TeamControllers.AddMember)
+TeamRoute.get("/", isloggedIn, TeamControllers.Team)
+TeamRoute.get("/admins", isloggedIn, TeamControllers.teamAdmins)
+TeamRoute.delete("/delete/:id", isloggedIn, TeamControllers.deleteMember)
+TeamRoute.put("/update/:id", isloggedIn, TeamControllers.update)
 TeamRoute.put(
-  "/request-attend/:id",isloggedIn,
+  "/request-attend/:id", isloggedIn,
   checkLocation(allowedLocation, 1000),
   TeamControllers.requestAttend
 );
 TeamRoute.put(
   "/approve-attend/:id",
-  checkLocation(allowedLocation, 1000),isloggedIn,
+  checkLocation(allowedLocation, 1000), isloggedIn,
   TeamControllers.approveAttend
 );
-TeamRoute.get("/attendance",isloggedIn,TeamControllers.attendance)
-TeamRoute.get("/my-attendance/:id",isloggedIn,TeamControllers.myAttendance)
+TeamRoute.get("/attendance", isloggedIn, TeamControllers.attendance)
+TeamRoute.get("/my-attendance/:id", isloggedIn, TeamControllers.myAttendance)
 TeamRoute.post("/forgot-password", TeamControllers.forgotPassword);
 TeamRoute.post("/login", TeamControllers.login);
 TeamRoute.put("/reset-password/:token", TeamControllers.resetPassword);
-TeamRoute.get("/logged-user",isloggedIn, TeamControllers.getUser);
+TeamRoute.get("/logged-user", isloggedIn, TeamControllers.getUser);
 TeamRoute.put("/toogle-admin/:id", TeamControllers.toggleAdmin);
-TeamRoute.put("/leave/:id",checkLocation(allowedLocation, 1000),  TeamControllers.leave);
+TeamRoute.put("/leave/:id", checkLocation(allowedLocation, 1000), TeamControllers.leave);
 TeamRoute.put("/comment/:id", TeamControllers.addComment);
 TeamRoute.put("/comment/:id", TeamControllers.addComment);
 TeamRoute.put("/toogle-attendance/:id", TeamControllers.switchAttend);
 TeamRoute.put("/toogle-active/:id", TeamControllers.activateMember);
+TeamRoute.get("/deleted", isloggedIn, TeamControllers.getDeletedMembers);

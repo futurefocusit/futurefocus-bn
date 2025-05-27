@@ -31,6 +31,7 @@ export const taskSchema = new Schema<TaskTypes>({
   startTime: {
     type: Date,
   },
+  deleted:{type:Boolean,default:false,required:true},
   comments: [
     {
       type: Schema.Types.ObjectId,

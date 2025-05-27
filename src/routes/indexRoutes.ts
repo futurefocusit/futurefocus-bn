@@ -17,10 +17,10 @@ import subscriptionRouter from "./subscriptionRouter";
 import uploadSingle from "rod-fileupload";
 import cloudinary from "../config/multer";
 import UploadRouter from "./upload";
-
+import { DeletedRoute } from "./DeletedRoutes";
 
 export const indexRouter = Router()
-indexRouter.use('/upload',isloggedIn,UploadRouter)
+indexRouter.use('/upload', isloggedIn, UploadRouter)
 indexRouter.use("/others", othersRoute);
 indexRouter.use("/students", StudentRoutes);
 indexRouter.use("/member", TeamRoute);
@@ -35,4 +35,6 @@ indexRouter.use("/task", isloggedIn, taskRouter);
 indexRouter.use("/inventory", isloggedIn, inventoryRouter);
 indexRouter.use("/institution", InstitutionRouter);
 indexRouter.use("/subscription", isloggedIn, subscriptionRouter);
-// indexRouter.get("/test", payment);  
+indexRouter.use("/deleted", DeletedRoute);
+
+  

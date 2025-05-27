@@ -20,7 +20,7 @@ export class TeamControllers {
       if (isExist) {
         return res.status(400).json({ message: "member already exist" });
       }
-      const password= await hashingPassword('000000')
+      const password = await hashingPassword('00000000')
       await Team.create({ name, title, image, email, position, instagram, password, institution: loggedUser.institution });
       return res.status(200).json({ messsage: "member added" });
     } catch (error: any) {
@@ -33,7 +33,7 @@ export class TeamControllers {
     try {
       const loggedUser = req.loggedUser
 
-      const team = req.loggedUser ? await Team.find({ institution: loggedUser.institution,deleted:false }) : await Team.find({ institution: req.api.inst,deleted:false });
+      const team = req.loggedUser ? await Team.find({ institution: loggedUser.institution, deleted: false }) : await Team.find({ institution: req.api.inst, deleted: false });
       return res.status(200).json(team);
     } catch (error: any) {
       return res
@@ -61,7 +61,7 @@ export class TeamControllers {
         return res.status(400).json({ message: "member doesnot exists" });
       }
 
-      await Team.deleteOne({ email: member.email },{deleted:true});
+      await Team.deleteOne({ email: member.email }, { deleted: true });
       res.status(200).json({ message: "member deleted successfuly" });
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} Occured` });
@@ -188,7 +188,7 @@ export class TeamControllers {
   static attendance = async (req: any, res: Response) => {
     try {
       const loggedUser = req.loggedUser
-      const attendance = await TeamAttendandance.find({ institution: loggedUser.institution,deleted:false }).populate("memberId");
+      const attendance = await TeamAttendandance.find({ institution: loggedUser.institution, deleted: false }).populate("memberId");
       res.status(200).json(attendance);
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} occured` });
@@ -197,7 +197,7 @@ export class TeamControllers {
   static myAttendance = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
-      const attendance = await TeamAttendandance.find({ memberId: id,deleted:false });
+      const attendance = await TeamAttendandance.find({ memberId: id, deleted: false });
       if (!attendance) {
         res.status(400).json({ message: `your have not attendance` });
       }
@@ -337,7 +337,7 @@ export class TeamControllers {
 
       if (!user) {
         return res.status(401).json({ message: "user not found" });
-      } 
+      }
 
       if (!user.isAdmin && !user.isSuperAdmin) {
         return res.status(401).json({ message: "only admin allowed" });
@@ -381,7 +381,7 @@ export class TeamControllers {
             }
           }
         }).populate('institution'),
-        Access.findOne({ institution: loggedUser.institution,deleted:false })
+        Access.findOne({ institution: loggedUser.institution, deleted: false })
       ]);
 
       if (!user) {
@@ -473,4 +473,17 @@ export class TeamControllers {
     }
 
   }
+  static getDeletedMembers = async (req: any, res: Response) => {
+    try {
+      const loggedUser = req.loggedUser;
+      const deletedMembers = req.loggedUser
+        ? await Team.find({ institution: loggedUser.institution, deleted: true })
+        : await Team.find({ institution: req.api.inst, deleted: true });
+      return res.status(200).json(deletedMembers);
+    } catch (error: any) {
+      return res
+        .status(500)
+        .json({ message: `Error ${error.message} occurred` });
+    }
+  };
 }

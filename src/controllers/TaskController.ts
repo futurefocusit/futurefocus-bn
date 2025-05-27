@@ -111,15 +111,15 @@ export class taskController {
     try {
       const { id } = req.params;
       await Task.findByIdAndUpdate(id,{deleted:true});
-      const comments = await Comment.find({ task: id });
-      await Promise.all(
-        comments.map(async (comment) => {
-          await Reply.deleteMany({ comment });
-        })
-      );
+      // const comments = await Comment.find({ task: id });
+      // await Promise.all(
+      //   comments.map(async (comment) => {
+      //     await Reply.deleteMany({ comment });
+      //   })
+      // );
       // await Comment.deleteMany({ task: id });
       res.status(200).json({
-        message: "deletednTask successfully.",
+        message: "deleted Task successfully.",
       });
     } catch (error) {
       console.error(error);

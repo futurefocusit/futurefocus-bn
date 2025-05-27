@@ -9,6 +9,7 @@ export interface TaskTypes extends Document {
   status: string;
   manager: ObjectId;
   comments: [ObjectId];
+  deleted:boolean
 }
 export interface ReplyTypes {
   institution: ObjectId;
