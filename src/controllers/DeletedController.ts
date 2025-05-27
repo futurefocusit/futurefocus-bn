@@ -17,6 +17,7 @@ import Feature from "../models/Feature";
 import Intake from "../models/Intake";
 import { Shift } from "../models/Intake";
 import Payment from "../models/payment";
+import { Task } from "../models/task";
 
 // Map of model names to their mongoose models
 const models = {
@@ -28,6 +29,7 @@ const models = {
     MaterialRent,
     Inventory,
     Media,
+    Task,
     AccessTransaction,
     AccessPayment,
     Cashflow,
@@ -46,15 +48,13 @@ export class DeletedController {
         try {
             const loggedUser = req.loggedUser;
             const institutionId = loggedUser?.institution || req.api?.inst;
-
-            // If no institution context, return error
+            
             if (!institutionId) {
                 return res.status(400).json({ message: "No institution context found" });
             }
 
             const results: { [key: string]: any[] } = {};
 
-            // Query each model for deleted documents
             for (const [modelName, model] of Object.entries(models)) {
                 try {
                     // Check if model has institution field
@@ -73,7 +73,6 @@ export class DeletedController {
                     }
                 } catch (error) {
                     console.error(`Error fetching deleted documents from ${modelName}:`, error);
-                    // Continue with other models even if one fails
                     continue;
                 }
             }
