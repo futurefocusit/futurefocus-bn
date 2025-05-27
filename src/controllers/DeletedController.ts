@@ -48,7 +48,7 @@ export class DeletedController {
         try {
             const loggedUser = req.loggedUser;
             const institutionId = loggedUser?.institution || req.api?.inst;
-            
+
             if (!institutionId) {
                 return res.status(400).json({ message: "No institution context found" });
             }
@@ -66,7 +66,29 @@ export class DeletedController {
                         ? { institution: institutionId, deleted: true }
                         : { deleted: true };
 
-                    const deletedDocs = await (model as any).find(query).lean();
+                    let deletedDocs;
+                    switch (modelName) {
+                        case 'Payment':
+                            deletedDocs = await (model as any).find(query).populate('studentId').lean();
+                            break;
+                        case 'Task':
+                            deletedDocs = await (model as any).find(query).populate('user manager').lean();
+                            break;
+                        case 'MaterialRent':
+                            deletedDocs = await (model as any).find(query).populate('render receiver').lean();
+                            break;
+                        case 'Team':
+                            deletedDocs = await (model as any).find(query).populate('role').lean();
+                            break;
+                        case 'Role':
+                            deletedDocs = await (model as any).find(query).populate('permission').lean();
+                            break;
+                        case 'Permission':
+                            deletedDocs = await (model as any).find(query).populate('feature').lean();
+                            break;
+                        default:
+                            deletedDocs = await (model as any).find(query).lean();
+                    }
 
                     if (deletedDocs.length > 0) {
                         results[modelName] = deletedDocs;

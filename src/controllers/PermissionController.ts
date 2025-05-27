@@ -34,6 +34,16 @@ export class PermissionCointroller {
       res.status(500).json({ message: `Error ${error.message} Occured` });
     }
   };
+  static deleteRole = async (req: any, res: Response) => {
+    try {
+
+      const { id } = req.body;
+      await Role.findByIdAndUpdate(id,{deleted:true});
+      res.status(201).json({ message: `role created` });
+    } catch (error: any) {
+      res.status(500).json({ message: `Error ${error.message} Occured` });
+    }
+  };
   static viewRole = async (req: any, res: Response) => {
     try {
       const {institution} = req.loggedUser
