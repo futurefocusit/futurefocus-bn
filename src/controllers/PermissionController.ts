@@ -17,7 +17,7 @@ export class PermissionCointroller {
   };
   static ViewFeature = async (req: Request, res: Response) => {
     try {
-      const features = await Feature.find();
+      const features = await Feature.find({deleted:false});
       res.status(200).json(features);
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} Occured` });
@@ -37,7 +37,7 @@ export class PermissionCointroller {
   static viewRole = async (req: any, res: Response) => {
     try {
       const {institution} = req.loggedUser
-      const roles = await Role.find({institution}).populate("permission");
+      const roles = await Role.find({institution,deleted:false}).populate("permission");
       res.status(200).json(roles);
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} Occured` });
@@ -54,7 +54,7 @@ export class PermissionCointroller {
   };
   static ViewPermission = async (req: any, res: Response) => {
     try {
-      const permissions = await Permission.find().populate("feature");
+      const permissions = await Permission.find({deleted:false}).populate("feature");
       res.status(200).json(permissions);
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} Occured` });

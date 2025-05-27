@@ -45,7 +45,8 @@ export class InstitutionControllers {
             const role = await Role.create([{
                 institution: institution._id,
                 role: "Admin",
-                permission: permissions
+                permission: permissions,
+                
             }], { session });
 
             if (!role[0]) {
@@ -97,8 +98,8 @@ export class InstitutionControllers {
 
     static all = async (req: Request, res: Response) => {
         try {
-            const institutions = await Institution.find();
-            const access = await Access.find();
+            const institutions = await Institution.find({deleted:false});
+            const access = await Access.find({deleted:false});
 
             // Map institutions with their access features
             const institutionsWithAccess = institutions.map(inst => {
@@ -188,7 +189,7 @@ export class InstitutionControllers {
 
             const [inst, accessInst] = await Promise.all([
                 Institution.findById(id).session(session),
-                Access.findOne({ institution: id }).session(session)
+                Access.findOne({ institution: id,deleted:false }).session(session)
             ]);
 
             if (!inst) {
@@ -285,7 +286,7 @@ export class InstitutionControllers {
         try {
             const { features, institution, month } = req.body;
 
-            const access = await Access.findOne({ institution }).session(session);
+            const access = await Access.findOne({ institution,deleted:false }).session(session);
             if (!access) {
                 await session.abortTransaction();
                 return res.status(400).json({ message: "No access found! Contact support team" });

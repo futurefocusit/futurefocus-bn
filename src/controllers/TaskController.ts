@@ -32,7 +32,7 @@ export class taskController {
   static getTasks = async (req: any, res: Response) => {
     try {
       const loggedUser = req.loggedUser
-      const tasks = await Task.find({ institution: loggedUser.institution })
+      const tasks = await Task.find({ institution: loggedUser.institution,deleted:false })
         .populate("user")
         .populate({
           path: "comments",
@@ -56,7 +56,7 @@ export class taskController {
   static getTasksByUser = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
-      const tasks = await Task.find({ user: id })
+      const tasks = await Task.find({ user: id,deleted:false })
         .populate("manager")
         .populate({
           path: "comments",
@@ -110,14 +110,14 @@ export class taskController {
   static delete = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;
-      await Task.findByIdAndDelete(id);
+      await Task.findByIdAndUpdate(id,{deleted:true});
       const comments = await Comment.find({ task: id });
       await Promise.all(
         comments.map(async (comment) => {
           await Reply.deleteMany({ comment });
         })
       );
-      await Comment.deleteMany({ task: id });
+      // await Comment.deleteMany({ task: id });
       res.status(200).json({
         message: "deletednTask successfully.",
       });

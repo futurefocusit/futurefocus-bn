@@ -18,7 +18,7 @@ export class CourseController {
   static getAll = async (req: any, res: Response) => {
     try {
     const loggedUser = req.loggedUser
-      const courses =req.loggedUser? await Course.find({institution:loggedUser.institution}).populate('shifts'): await Course.find({institution:req.api.inst}).populate('shifts');
+      const courses =req.loggedUser? await Course.find({institution:loggedUser.institution,deleted:false}).populate('shifts'): await Course.find({institution:req.api.inst,deleted:false}).populate('shifts');
       res.status(200).json(courses);
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} occured` });
@@ -42,7 +42,7 @@ export class CourseController {
   static delete = async (req: Request, res: Response) => {
     try {
       const courseId = req.params.id;
-      await Course.findByIdAndDelete(courseId);
+    await Course.findByIdAndUpdate(courseId,{deleted:true});
       res.status(200).json({ message: "course deleted" });
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} occured` });

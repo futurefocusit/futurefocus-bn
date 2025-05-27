@@ -22,7 +22,7 @@ export class cashflowControler {
   static getAll = async (req: any, res: Response) => {
     try {
       const loggedUser = req.loggedUser
-      const cashflow = await Cashflow.find({ institution: loggedUser.institution });
+      const cashflow = await Cashflow.find({ institution: loggedUser.institution,deleted:false });
       res.status(200).json(cashflow)
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} ocuured` });
@@ -32,7 +32,7 @@ export class cashflowControler {
   static delete = async (req: Request, res: Response) => {
     const { id } = req.params
     try {
-      await Cashflow.findByIdAndDelete(id)
+      await Cashflow.findByIdAndUpdate(id,{deleted:true})
       res.status(200).json({ message: "deleted successfully" })
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} ocuured` });

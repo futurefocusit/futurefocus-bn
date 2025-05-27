@@ -13,7 +13,7 @@ export class PaymentController {
 
     try {
       const student = await Student.findById(id);
-      const payment = await Payment.findOne({ studentId: id });
+      const payment = await Payment.findOne({ studentId: id,deleted:false });
 
       if (!student) {
         return res.status(404).json({ message: "Unable to find student info" });
@@ -126,7 +126,7 @@ export class PaymentController {
     try {
       const loggedUser = req.loggedUser
 
-      const payment = await Payment.find({ institution: loggedUser.institution });
+      const payment = await Payment.find({ institution: loggedUser.institution,deleted:false });
       res.status(200).json(payment);
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} occured` });
@@ -136,7 +136,7 @@ export class PaymentController {
     try {
       const loggedUser = req.loggedUser
 
-      const transactions = await Transaction.find({ institution: loggedUser.institution }).populate("studentId");
+      const transactions = await Transaction.find({ institution: loggedUser.institution,deleted:false }).populate("studentId");
       res.status(200).json(transactions);
     } catch (error: any) {
       res.status(500).json({ message: `Eror ${error.message} occured` });
@@ -146,7 +146,7 @@ export class PaymentController {
     const { id } = req.params;
     const { amount } = req.body;
     try {
-      const payment = await Payment.findOne({ studentId: id });
+      const payment = await Payment.findOne({ studentId: id,deleted:false });
       if (!payment) {
         return res
           .status(400)
@@ -168,7 +168,7 @@ export class PaymentController {
     const { id } = req.params;
     const { amount } = req.body;
     try {
-      const payment = await Payment.findOne({ studentId: id });
+      const payment = await Payment.findOne({ studentId: id,deleted:false });
       if (!payment) {
         return res
           .status(400)
@@ -192,7 +192,7 @@ export class PaymentController {
       if (!transaction) {
         return res.status(400).json({ message: "no transaction found" });
       }
-      await Transaction.deleteOne({ _id: id });
+      await Transaction.updateOne({ _id: id},{deleted:true} );
       return res.status(200).json({ message: "deleted successfully" });
     } catch (error) {
       return res.status(500).json({ message: "interanl server error" });
@@ -201,11 +201,11 @@ export class PaymentController {
   static deletePayment = async (req: Request, res: Response) => {
     const { id } = req.params;
     try {
-      const payment = await Payment.findOneAndDelete({ studentId: id });
+      const payment = await Payment.findOneAndUpdate({ studentId: id },{deleted:true});
       if (!payment) {
         return res.status(400).json({ message: "no payment  found" });
       }
-      await Student.findByIdAndDelete(id);
+      await Student.findByIdAndUpdate(id,{deleted:true});
       return res.status(200).json({ message: "deleted successfully" });
     } catch (error) {
       return res.status(500).json({ message: "interanl server error" });
@@ -215,7 +215,7 @@ export class PaymentController {
     const { id } = req.params;
     const { comment } = req.body;
     try {
-      const payment = await Payment.findOne({ studentId: id });
+      const payment = await Payment.findOne({ studentId: id,deleted:false });
       if (!payment) {
         return res.status(400).json({ message: "no student found" });
       }

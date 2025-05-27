@@ -38,6 +38,8 @@ const StudentSchema = new Schema<StudentTypes>(
       ],
       default: "pending",
     },
+   deleted:{type:Boolean,required:true, default:false}
+
   },
   {
     timestamps: true,

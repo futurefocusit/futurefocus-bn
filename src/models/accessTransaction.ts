@@ -12,6 +12,7 @@ export interface AccessTransactionTypes {
     }[];
     subscriptionEnd?: Date;
     reference?: string;
+    deleted:boolean
 }
 
 const AccessTransactionSchema = new Schema<AccessTransactionTypes>({
@@ -42,6 +43,7 @@ const AccessTransactionSchema = new Schema<AccessTransactionTypes>({
     }],
     subscriptionEnd: { type: Date },
     reference: { type: String },
+ deleted:{type:Boolean,required:true, default:false}
 }, { timestamps: true });
 
 export const AccessTransaction = model<AccessTransactionTypes>("AccessTransaction", AccessTransactionSchema);

@@ -45,7 +45,8 @@ const AccessSchema = new Schema<accesstypes>({
   updatedAt: {
     type: Date,
     default: Date.now
-  }
+  },
+  deleted:{type:Boolean,required:true, default:false}
 });
 
 // Add middleware to update the updatedAt field

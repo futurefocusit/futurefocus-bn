@@ -16,7 +16,7 @@ export class ServiceController {
   static getAll = async(req:any,res:Response)=>{
     try {
       const loggedUser = req.loggedUser
-       const services =req.loggedUser? await Service.find({institution:loggedUser.institution}): await Service.find({institution:req.api.inst})
+       const services =req.loggedUser? await Service.find({institution:loggedUser.institution,deleted:false}): await Service.find({institution:req.api.inst})
        res.status(200).json(services)
 
         
@@ -44,7 +44,7 @@ export class ServiceController {
   static delete = async(req:Request,res:Response)=>{
     try {
         const serviceId = req.params.id
-        await Service.findByIdAndDelete(serviceId)
+        await Service.findByIdAndUpdate(serviceId,{deleted:true})
        res.status(200).json({ message: "service deleted" });
 
     } catch (error:any) {

@@ -99,6 +99,7 @@ export class SubscriptionController {
 
             // Find subscriptions expiring in next 7 days
             const expiringSoon = await Access.find({
+                deleted:false,
                 subscriptionEnd: {
                     $gte: now,
                     $lte: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000)
@@ -140,6 +141,7 @@ export class SubscriptionController {
 
             // Find grace periods that have ended
             const endedGracePeriods = await Access.find({
+                deleted:false,
                 gracePeriodEnd: { $lt: now },
                 status: "grace_period"
             }).populate('institution');

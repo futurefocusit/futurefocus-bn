@@ -11,6 +11,8 @@ const transactionSchema = new Schema<transactionTypes>(
     },
     amount: { type: Number, required: true },
     reason: { type: String, default: "" },
+   deleted:{type:Boolean,required:true, default:false}
+
   },
   {
     timestamps: true,

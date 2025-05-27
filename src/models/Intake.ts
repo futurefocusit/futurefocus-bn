@@ -3,6 +3,7 @@ import mongoose, { model, ObjectId, Schema } from "mongoose";
 export interface IIntake {
   institution:ObjectId
   intake: string;
+  deleted:boolean
 }
 const IntakeSchema = new Schema<IIntake>(
   {
@@ -12,6 +13,8 @@ const IntakeSchema = new Schema<IIntake>(
       required: true,
     },
     intake: { type: String, required: true },
+    deleted:{type:Boolean,default:false}
+
   },
   {
     timestamps: true,
@@ -27,6 +30,7 @@ export interface IShift {
   name:string
   start: String;
   end: String;
+  deleted:boolean
 }
 const ShiftSchema = new Schema<IShift>(
   {
@@ -39,6 +43,8 @@ const ShiftSchema = new Schema<IShift>(
     days: { type: String, required: true },
     start: { type: String, required: true },
     end: { type: String, required: true },
+     deleted:{type:Boolean,required:true, default:false}
+
   },
   {
     timestamps: true,

@@ -77,7 +77,7 @@ const loggedUser = req.loggedUser
     try {
 const loggedUser = req.loggedUser
   
-      const inventories = await Material.find({institution:loggedUser.institution}).populate('category')
+      const inventories = await Material.find({institution:loggedUser.institution,deleted:false}).populate('category')
       res.status(200).json(inventories);
     } catch (error) {
       res.status(500).json({ message: "Internal server error" });
@@ -88,7 +88,7 @@ const loggedUser = req.loggedUser
     try {
        const loggedUser = req.loggedUser
 
-      const rent = await MaterialRent.find({institution:loggedUser.institution}).populate('materialId').populate('render').populate('receiver')
+      const rent = await MaterialRent.find({institution:loggedUser.institution,deleted:false}).populate('materialId').populate('render').populate('receiver')
       res.status(200).json(rent);
     } catch (error) {
       res.status(500).json({ message: "Internal server error" });
@@ -98,7 +98,7 @@ const loggedUser = req.loggedUser
   static getCategory = async (req: any, res: Response) => {
     try {
 const loggedUser = req.loggedUser
-      const inventories = await Inventory.find({institution:loggedUser.institution})
+      const inventories = await Inventory.find({institution:loggedUser.institution,deleted:false})
       res.status(200).json(inventories);
     } catch (error) {
       res.status(500).json({ message: "Internal server error" });
@@ -138,7 +138,7 @@ const loggedUser = req.loggedUser
   static deleteInventory = async (req: Request, res: Response) => {
     const { id } = req.params;
     try {
-      const deletedInventory = await Material.findByIdAndDelete(id);
+      const deletedInventory = await Material.findByIdAndUpdate(id,{deleted:true});
       if (!deletedInventory) {
         return res.status(404).json({ message: "Inventory not found" });
       }

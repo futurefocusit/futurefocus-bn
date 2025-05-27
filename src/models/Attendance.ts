@@ -15,7 +15,10 @@ const AttendanceSchema = new Schema<attendanceTypes>(
       required: true,
       default: "absent",
     },
+ deleted:{type:Boolean,required:true, default:false}
+
   },
+
   {
     timestamps: true,
   }

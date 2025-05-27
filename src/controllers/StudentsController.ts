@@ -5,7 +5,6 @@ import Payment from "../models/payment";
 import Course from "../models/Course";
 import Cashflow from "../models/cashFlow";
 import { comparePassword } from "../utils/PasswordUtils";
-import OnlineStudent from "../models/onlineStudent";
 import { sendEmail } from "../utils/sendEmail";
 import { generateRandom4Digit } from "../utils/generateRandomNumber";
 import { sendMessage } from "../utils/sendSms";
@@ -20,7 +19,7 @@ export class StudentControllers {
 
     try {
       const alreadyExist =
-        await Student.findOne({ phone: studentData.phone });
+        await Student.findOne({ phone: studentData.phone,deleted:false });
       if (alreadyExist) {
         return res.status(400).json({ message: "You have already applied " });
       }
@@ -71,7 +70,7 @@ export class StudentControllers {
     try {
       const loggedUser = req.loggedUser
 
-      const students = await Student.find({ institution: loggedUser.institution })
+      const students = await Student.find({ institution: loggedUser.institution,deleted:false})
         .sort({ createdAt: -1 })
         .populate("selectedCourse selectedShift");
       return res.status(200).json(students);
@@ -84,12 +83,12 @@ export class StudentControllers {
     const loggedUser = (req as any).loggedUser
 
     try {
-      const student = await Student.findByIdAndDelete(id);
+      const student = await Student.findByIdAndUpdate(id,{deleted:true});
 
       if (!student) {
         return res.status(404).json({ message: "Student not found" });
       }
-      await Payment.findOneAndDelete({ studentId: student._id });
+      await Payment.findOneAndUpdate({ studentId: student._id },{deleted:true});
       res.status(200).json({ message: "student deleted successfully" });
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} occured` });
@@ -272,42 +271,5 @@ export class StudentControllers {
         .json({ message: `Internal server error ${error}` });
     }
   };
-  static login = async (req: Request, res: Response) => {
-    try {
-      const { email, password } = req.body;
-      const user = await OnlineStudent.findOne({ email });
-      if (!user) {
-        return res.status(401).json({ message: "user not found" });
-      }
-
-      const isMatch = await comparePassword(password, user.password);
-      if (!isMatch) {
-        return res.status(401).json({ message: "Password does not match" });
-      }
-
-      const OTP = generateRandom4Digit();
-      user.otp = OTP;
-      await user.save();
-      const mailOptions = {
-        from: process.env.OUR_EMAIL,
-        to: user.email,
-        subject: " One Time Password Code",
-        html: `
-            <h1>One-Time Password (OTP)</h1>
-            <p>Dear User,</p>
-            <p>Your OTP is <strong>${OTP}</strong>.</p>
-            <p>Thank you!</p>
-        `,
-      };
-      await sendEmail(mailOptions);
-
-      return res
-        .status(200)
-        .json({ message: "check your email for OTP " });
-    } catch (error: any) {
-      return res
-        .status(500)
-        .json({ message: `Error occurred: ${error.message}` });
-    }
-  };
+ 
 }

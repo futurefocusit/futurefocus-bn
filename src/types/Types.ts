@@ -15,6 +15,7 @@ export interface ReplyTypes {
   user: ObjectId;
   text: string;
   comment: ObjectId;
+  deleted:boolean
 }
 export interface CommentTypes {
   institution: ObjectId;
@@ -22,6 +23,7 @@ export interface CommentTypes {
   text: string;
   user: ObjectId;
   replies: [ObjectId];
+  deleted:boolean
 }
 export interface StudentTypes extends Document {
   institution: ObjectId;
@@ -34,6 +36,7 @@ export interface StudentTypes extends Document {
   comment: string;
   status: string;
   intake: string;
+  deleted:boolean
 }
 export interface TeamTypes extends Document {
   institution: ObjectId;
@@ -50,12 +53,14 @@ export interface TeamTypes extends Document {
   role: ObjectId;
   otp: number | null;
   phone: string;
+  deleted:boolean
 }
 export interface ServiceTypes extends Document {
   institution: ObjectId;
   title: string;
   subservices: string[];
   icon: string;
+  deleted:boolean
 }
 
 export interface CourseTypes extends Document {
@@ -68,6 +73,7 @@ export interface CourseTypes extends Document {
   active: boolean;
   nonScholarship: number;
   shifts: ObjectId[];
+  deleted:boolean
 }
 export interface socialMedias {
   web: string,
@@ -87,6 +93,7 @@ export interface attendanceTypes {
   institution: ObjectId;
   studentId: Schema.Types.ObjectId;
   status: string;
+  deleted:boolean
 }
 export interface paymentTypes {
   institution: ObjectId;
@@ -97,6 +104,7 @@ export interface paymentTypes {
   amountDiscounted: number;
   extraAmount: number;
   comment: string;
+  deleted:boolean
 }
 
 export interface transactionTypes {
@@ -104,6 +112,7 @@ export interface transactionTypes {
   studentId: Schema.Types.ObjectId;
   amount: number;
   reason: string;
+  deleted:boolean
 }
 export interface cashflowTypes {
   institution: ObjectId;
@@ -112,16 +121,19 @@ export interface cashflowTypes {
   amount: number;
   reason: string;
   payment: string;
+  deleted:boolean
 }
 export interface RoleTypes {
   institution: ObjectId;
   role: string;
   permission: ObjectId[];
+  deleted:boolean
 }
 export interface PermissionTypes {
   institution: ObjectId;
   feature: Types.ObjectId;
   permission: string;
+  deleted:boolean
 }
 export interface InstitutionTypes {
   institution: ObjectId;
@@ -132,6 +144,7 @@ export interface InstitutionTypes {
   phone: number;
   verified: boolean;
   website: string
+  deleted:boolean
 }
 export interface AccessPaymentTypes {
   institution: ObjectId;
@@ -141,6 +154,7 @@ export interface AccessPaymentTypes {
     feature: ObjectId;
     duration: number;
   }[];
+  deleted:boolean,
   status: "pending" | "completed" | "failed";
 }
 export interface Ifeature {
@@ -148,6 +162,7 @@ export interface Ifeature {
   active: boolean;
   lastUpdated?: Date;
   dueDate: number;
+  deleted:boolean
 }
 export interface accesstypes {
   institution: ObjectId;
@@ -160,6 +175,7 @@ export interface accesstypes {
   }[];
   status: "active" | "expired" | "grace_period";
   gracePeriodEnd?: Date;
+  deleted:boolean
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -168,4 +184,6 @@ export interface IAPI {
   api_name: string;
   api_key: string;
   secret_key: string;
+  deleted:boolean
+
 }

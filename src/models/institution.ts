@@ -9,5 +9,7 @@ const InstitutionSchema = new Schema<InstitutionTypes>({
   logo:{type:String},
   verified:{type:Boolean,required:true, default:false},
   website:{type:String},
+  deleted:{type:Boolean,required:true, default:false}
+
 },{timestamps:true});
 export const Institution = model<InstitutionTypes>("Institution",InstitutionSchema)

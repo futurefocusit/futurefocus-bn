@@ -36,8 +36,6 @@ export const uploadMedia = async (req: Request, res: Response) => {
       return res.status(400).json({ message: "File is required." });
     }
 
-
-
     const media = new Media({
       type,
       url: fileUrl,
@@ -86,7 +84,7 @@ export const updateMedia = async (req: Request, res: Response) => {
 export const deleteMedia = async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
-    const media = await Media.findByIdAndDelete(id);
+    const media = await Media.findByIdAndUpdate(id,{deleted:true});
     if (!media) {
       return res.status(404).json({ message: "Media not found" });
     }
@@ -100,7 +98,7 @@ export const deleteMedia = async (req: Request, res: Response) => {
 // Controller to get all media
 export const getMedia = async (req: Request, res: Response) => {
   try {
-    const media = await Media.find();
+    const media = await Media.find({deleted:false});
     res.status(200).json(media);
   } catch (error) {
     console.error("Error fetching media:", error);
@@ -109,8 +107,8 @@ export const getMedia = async (req: Request, res: Response) => {
 };
 export const getVideos = async (req: Request, res: Response) => {
   try {
-    const video = await Video.find({ type: "video" });
-    const beat = await Video.find({ type: "beat" });
+    const video = await Video.find({ type: "video",deleted:false });
+    const beat = await Video.find({ type: "beat",deleted:false });
     res.status(200).json({ video, beat });
   } catch (error) {
     console.error("Error fetching media:", error);
@@ -120,7 +118,7 @@ export const getVideos = async (req: Request, res: Response) => {
 export const deleteVideos = async (req: Request, res: Response) => {
   try {
     const { id } = req.params
-    await Video.findByIdAndDelete(id)
+    await Video.findByIdAndUpdate(id,{deleted:true})
     res.status(200).json({ message: "Video deleted successfully" });
   } catch (error) {
     console.error("Error deleting media media:", error);

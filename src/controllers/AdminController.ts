@@ -29,16 +29,17 @@ export class AdminControllers {
         expiredInstitutions,
         accessData
       ] = await Promise.all([
-        Institution.countDocuments(),
-        Student.countDocuments(),
-        Course.countDocuments(),
-        Payment.countDocuments(),
-        Material.countDocuments(),
-        Team.countDocuments(),
-        Institution.countDocuments({ verified: true }),
-        AccessPayment.countDocuments(),
-        Subscriber.countDocuments(),
+        Institution.countDocuments({deleted:false}),
+        Student.countDocuments({deleted:false}),
+        Course.countDocuments({deleted:false}),
+        Payment.countDocuments({deleted:false}),
+        Material.countDocuments({deleted:false}),
+        Team.countDocuments({deleted:false}),
+        Institution.countDocuments({ verified: true, deleted:false }),
+        AccessPayment.countDocuments({deleted:false}),
+        Subscriber.countDocuments({deleted:false}),
         Access.countDocuments({
+          deleted:false,
           status: 'active',
           subscriptionEnd: {
             $gte: Date.now(),
@@ -47,7 +48,9 @@ export class AdminControllers {
         }),
         Access.countDocuments({
           status: 'active',
-          subscriptionEnd: { $lt: Date.now() }
+          subscriptionEnd: { $lt: Date.now(),
+            deleted:false
+           }
         }),
         Access.aggregate([
           { $unwind: "$features" },
@@ -174,7 +177,7 @@ export class AdminControllers {
   static getIntakes = async (req: any, res: Response) => {
     try {
       const loggedUser = req.loggedUser
-      const intakes = loggedUser ? await Intake.find({ institution: loggedUser.institution }) : await Intake.find({ institution: req.api.inst });
+      const intakes = loggedUser ? await Intake.find({ institution: loggedUser.institution,deleted:false }) : await Intake.find({ institution: req.api.inst });
 
       res.status(200).json({ intakes });
     } catch (error) {
@@ -188,7 +191,7 @@ export class AdminControllers {
       if (!inst) {
         return res.status(400).json({ message: "can not find inst with this website" })
       }
-      const intakes = await Intake.find();
+      const intakes = await Intake.find({deleted:false});
       res.status(200).json({ intakes });
     } catch (error) {
       res.status(500).json({ message: "failed to load intakes" });
@@ -198,7 +201,7 @@ export class AdminControllers {
     try {
 
       const loggedUser = req.loggedUser
-      const shifts = loggedUser ? await Shift.find({ institution: loggedUser.institution }) : await Shift.find({ institution: req.api.inst });
+      const shifts = loggedUser ? await Shift.find({ institution: loggedUser.institution,deleted:false }) : await Shift.find({ institution: req.api.inst,deleted:false });
       res.status(200).json({ shifts });
     } catch (error) {
       res.status(500).json({ message: "failed to load shifts" });
@@ -207,21 +210,20 @@ export class AdminControllers {
 
   static deleteIntake = async (req: Request, res: Response) => {
     const { id } = req.params;
-    const intake = await Intake.findById(id);
+    const intake = await Intake.findByIdAndUpdate(id,{deleted:true});
     if (!intake) {
       return res.status(400).json({ message: "intake not found" });
     }
-    await Intake.deleteOne({ _id: id });
+
     res.status(200).json({ message: "intake deleted" });
   };
   static deleteShift = async (req: Request, res: Response) => {
     const { id } = req.params;
 
-    const shift = await Shift.findById(id);
+    const shift = await Shift.findByIdAndUpdate(id,{deleted:true});
     if (!shift) {
       return res.status(400).json({ message: "shift not found" });
     }
-    await Shift.deleteOne({ _id: id });
     res.status(200).json({ message: "shift deleted" });
   };
 }

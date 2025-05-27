@@ -8,6 +8,7 @@ export interface IMedia extends Document {
   thumbnailUrl?: string;
   createdAt: Date;
   updatedAt: Date;
+  deleted:boolean
 }
 
 const MediaSchema: Schema = new Schema(
@@ -30,6 +31,8 @@ const MediaSchema: Schema = new Schema(
     thumbnailUrl: {
       type: String,
     },
+  deleted:{type:Boolean,required:true, default:false}
+
   },
   {
     timestamps: true,

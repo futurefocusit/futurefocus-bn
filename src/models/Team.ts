@@ -19,6 +19,7 @@ const TeamSchema = new Schema<TeamTypes>({
   role: { type: Schema.Types.ObjectId, ref: "Role", },
   isAdmin: { type: Schema.Types.Boolean, default: false },
   isSuperAdmin: { type: Schema.Types.Boolean, default: false },
+   deleted:{type:Boolean,required:true, default:false}
   
 
 });
@@ -41,6 +42,8 @@ const TeamAttendanceSchema = new Schema({
     required: true,
     default: "absent",
   },
+  deleted:{type:Boolean,default:false}
+
   
 },{
   timestamps:true 

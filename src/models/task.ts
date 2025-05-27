@@ -80,6 +80,8 @@ export const replySchema = new Schema<ReplyTypes>({
     type: Schema.Types.ObjectId,
     ref: "Comment",
   },
+  deleted:{type:Boolean,required:true, default:false}
+
 },{
   timestamps: true,
 });

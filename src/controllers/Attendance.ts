@@ -61,11 +61,11 @@ export const updateAttendance = async (req: Request, res: Response) => {
 export const getAttendance = async (req:any,res:Response)=>{
   try {
     const loggedUser = req.loggedUser
-    const attendance = await Attendance.find({ institution: loggedUser.institution })
+    const attendance = await Attendance.find({ institution: loggedUser.institution,deleted:false })
   .populate({
     path: "studentId",
     populate: {
-      path: "selectedShift" // Assuming selectedShift is a ref inside the Student model
+      path: "selectedShift" 
     }
   });
     res.status(200).json(attendance)

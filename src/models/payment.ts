@@ -24,6 +24,8 @@ const paymentSchema = new Schema<paymentTypes>(
     amountDiscounted: { type: Number, default: 0, required: true },
     extraAmount: { type: Number, default: 0, required: true },
     comment: { type: String, required: false },
+  deleted:{type:Boolean,required:true, default:false}
+
   },
   {
     timestamps: true,
