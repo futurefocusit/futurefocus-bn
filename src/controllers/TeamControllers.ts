@@ -199,7 +199,7 @@ export class TeamControllers {
       const { id } = req.params;
       const attendance = await TeamAttendandance.find({ memberId: id, deleted: false });
       if (!attendance) {
-        res.status(400).json({ message: `your have not attendance` });
+        res.status(400).json({ message: `your have no attendance` });
       }
       res.status(200).json(attendance);
     } catch (error: any) {

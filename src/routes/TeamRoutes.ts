@@ -1,7 +1,6 @@
 import { Router } from "express";
 import { TeamControllers } from "../controllers/TeamControllers";
 import { checkLocation } from "../middleware/checkLocation";
-import { isVerified } from "../middleware/isVerified";
 import { isloggedIn } from "../middleware/isLoggedIn";
 export interface Location {
   latitude: number;
@@ -37,7 +36,7 @@ TeamRoute.get("/logged-user", isloggedIn, TeamControllers.getUser);
 TeamRoute.put("/toogle-admin/:id", TeamControllers.toggleAdmin);
 TeamRoute.put("/leave/:id", checkLocation(allowedLocation, 1000), TeamControllers.leave);
 TeamRoute.put("/comment/:id", TeamControllers.addComment);
-TeamRoute.put("/comment/:id", TeamControllers.addComment);
+TeamRoute.put("/response/:id", TeamControllers.addresponse);
 TeamRoute.put("/toogle-attendance/:id", TeamControllers.switchAttend);
 TeamRoute.put("/toogle-active/:id", TeamControllers.activateMember);
 TeamRoute.get("/deleted", isloggedIn, TeamControllers.getDeletedMembers);
