@@ -1,4 +1,5 @@
 import connection from "./config/db";
+import fs from 'fs/promises';
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
@@ -6,6 +7,7 @@ import { dailyAttendance, teamAttendance } from "./jobs/AttendanceAutomation";
 import { indexRouter } from "./routes/indexRoutes";
 import http from 'http';
 import mongoose from 'mongoose';
+import startBackup from "./backup";
 
 
 dotenv.config();
@@ -27,7 +29,7 @@ app.use(
   })
 );
 
-app.use(express.json());
+app.use(express.json()); 
 dailyAttendance();
 teamAttendance();
  
@@ -36,10 +38,10 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1", indexRouter);
+startBackup()
 
 app.listen(PORT, async () => {
   await connection();
-
   console.log(`App is listening at http://localhost:${PORT}`);
 });
 

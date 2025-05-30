@@ -5,7 +5,7 @@
   "main": "dist/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon  src/app.ts",
+    "dev": "nodemon --ignore resume-token.json src/app.ts",
     "start": "node  --max-old-space-size=4096 dist/app.js",
     "build": "tsc"
   },
