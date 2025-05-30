@@ -19,7 +19,7 @@ import { Shift } from "../models/Intake";
 import Payment from "../models/payment";
 import { Task } from "../models/task";
 
-// Map of model names to their mongoose models
+
 const models = {
     Team,
     Institution,
@@ -110,4 +110,48 @@ export class DeletedController {
             });
         }
     };
+    static deletePermenetly = async (req: Request, res: Response) => {
+        const { model: modelName, id } = req.params;
+
+        const Model = models[modelName as keyof typeof models] as mongoose.Model<any>;
+
+        if (!Model) {
+            return res.status(400).json({ message: `Invalid model: ${modelName}` });
+        }
+
+        try {
+            const deletedItem = await Model.findByIdAndDelete(id);
+
+            if (!deletedItem) {
+                return res.status(404).json({ message: `${modelName} with ID ${id} not found.` });
+            }
+
+            res.status(200).json({ message: `${modelName} deleted successfully.`, item: deletedItem });
+        } catch (error: any) {
+            console.error(`Error deleting ${modelName}:`, error);
+            res.status(500).json({ message: `Error deleting ${modelName}.`, error: error.message });
+        }
+    }
+    static restore = async (req: Request, res: Response) => {
+        const { model: modelName, id } = req.params;
+
+        const Model = models[modelName as keyof typeof models] as mongoose.Model<any>;
+
+        if (!Model) {
+            return res.status(400).json({ message: `Invalid model: ${modelName}` });
+        }
+
+        try {
+            const deletedItem = await Model.findByIdAndUpdate(id,{deleted:false});
+
+            if (!deletedItem) {
+                return res.status(404).json({ message: `${modelName} with ID ${id} not found.` });
+            }
+
+            res.status(200).json({ message: `${modelName} restored successfully.`, item: deletedItem });
+        } catch (error: any) {
+            console.error(`Error deleting ${modelName}:`, error);
+            res.status(500).json({ message: `Error deleting ${modelName}.`, error: error.message });
+        }
+    }
 } 

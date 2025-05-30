@@ -17,7 +17,7 @@ import subscriptionRouter from "./subscriptionRouter";
 import uploadSingle from "rod-fileupload";
 import cloudinary from "../config/multer";
 import UploadRouter from "./upload";
-import { DeletedRoute } from "./DeletedRoutes";
+import { DeletedRoute } from "./recycleBinRoutes";
 
 export const indexRouter = Router()
 indexRouter.use('/upload', isloggedIn, UploadRouter)
