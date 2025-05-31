@@ -304,7 +304,8 @@ export class TeamControllers {
       user.otp = OTP;
       await user.save();
       const mailOptions = {
-        from: process.env.OUR_EMAIL,
+          from: `"${process.env.SMTP_FROM_NAME}" <${process.env.SMTP_FROM_EMAIL}>`,
+        replyTo:"no-reply@xcooll.com",
         to: user.email,
         subject: " One Time Password Code",
         html: `
