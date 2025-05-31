@@ -109,11 +109,9 @@ export class StudentControllers {
       if (!course) {
         return res.status(404).json({ message: "Course not found" });
       }
-
-      await Student.findByIdAndUpdate(id, { status: status }).populate(
-        "selectedCourse"
-      );
       if (status === "registered") {
+        student.registered = new Date(Date.now()).toLocaleDateString()
+
         await Transaction.create({
           institution: loggedUser.institution,
           studentId: student._id,
@@ -134,26 +132,28 @@ export class StudentControllers {
           amountDue: course.scholarship,
           amountDiscounted: course.nonScholarship - course.scholarship,
         });
-        await sendMessage(
-          //@ts-ignore
-          MessageTemplate({ name: student.name, amount: 0, remain: 0, course: student.selectedCourse.name }).register,
-          [student.phone.toString()]
-        );
+        
+        // await sendMessage(
+        
+        //   MessageTemplate({ name: student.name, amount: 0, remain: 0, course: student.selectedCourse.name }).register,
+        //   [student.phone.toString()]
+        // );
 
       }
-      // else if (status === 'accepted') {
-      //   await sendMessage(
-      //     MessageTemplate({
-      //       name: student.name,
-      //       amount: 0,
-      //       remain: 0,
-      //       //@ts-expect-error populated course
-      //       course: student.selectedCourse.name,
-      //     }).admit,
-      //     [student.phone.toString()]
-      //   );
+      else if (status === 'accepted') {
+        student.admitted = new Date(Date.now()).toLocaleDateString()
+        // await sendMessage(
+        //   MessageTemplate({
+        //     name: student.name,
+        //     amount: 0,
+        //     remain: 0,
+        //     //@ts-expect-error populated course
+        //     course: student.selectedCourse.name,
+        //   }).admit,
+        //   [student.phone.toString()]
+        // );
 
-      // }
+      }
 
       res.status(200).json({ message: `student new status ${status}` });
     } catch (error: any) {
@@ -180,10 +180,10 @@ export class StudentControllers {
   //   }
   // };
   static registerNew = async (req: any, res: Response) => {
-    // const session = await mongoose.startSession()
+    const session = await mongoose.startSession()
     const student = req.body;
     const loggedUser = req.loggedUser
-    // session.startTransaction()
+    session.startTransaction()
 
     try {
       const course = await Course.findById(student.selectedCourse);
@@ -199,6 +199,7 @@ export class StudentControllers {
       student.institution = loggedUser.institution
       const registerStudent = new Student(student);
       registerStudent.status = "registered";
+      registerStudent.registered = new Date(Date.now()).toLocaleDateString()
       await Payment.create({
         institution: loggedUser.institution,
         studentId: registerStudent._id,
@@ -219,7 +220,7 @@ export class StudentControllers {
         type: "income",
       });
       await registerStudent.save();
-      // await session.commitTransaction()
+      await session.commitTransaction()
       res.status(201).json({ message: "new student registered" });
       await sendMessage(
         MessageTemplate({
@@ -229,10 +230,10 @@ export class StudentControllers {
       );
 
     } catch (error: any) {
-      // await session.abortTransaction()
+      await session.abortTransaction()
       res.status(500).json({ message: `Error ${error.message} occured` });
     } finally {
-      // session.endSession()
+      session.endSession()
     }
   };
   static Update = async (req: Request, res: Response) => {
