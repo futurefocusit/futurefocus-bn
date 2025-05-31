@@ -2,7 +2,7 @@ import mongoose, { model, Schema } from "mongoose";
 import { StudentTypes } from "../types/Types";
 
 // Define the Student schema
-const StudentSchema = new Schema<StudentTypes>(
+const StudentSchema = new Schema<StudentTypes>( 
   {
     institution: {
       type: mongoose.Schema.Types.ObjectId,

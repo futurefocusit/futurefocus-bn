@@ -6,10 +6,12 @@ import { getAttendance,
 import { isVerified } from "../middleware/isVerified";
 import { isloggedIn } from "../middleware/isLoggedIn";
 import { authenticateAPI } from "../middleware/api.auth";
+import uploadSingle from "rod-fileupload";
+import cloudinary from "../config/multer";
 
 
 export const StudentRoutes =  Router()
-StudentRoutes.post('/apply',authenticateAPI,StudentControllers.apply)
+StudentRoutes.post('/apply',uploadSingle('identity',cloudinary), authenticateAPI,StudentControllers.apply)
 StudentRoutes.post('/past',isloggedIn,StudentControllers.pastRecord)
 StudentRoutes.get("/", 
     // isVerified,
