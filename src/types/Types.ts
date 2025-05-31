@@ -37,7 +37,13 @@ export interface StudentTypes extends Document {
   comment: string;
   status: string;
   intake: string;
+  dob:string,
+  location:string,
+  gender:string,
+  identity:string,
+  nationality:string
   deleted:boolean
+  
 }
 export interface TeamTypes extends Document {
   institution: ObjectId;
