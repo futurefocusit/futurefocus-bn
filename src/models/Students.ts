@@ -40,8 +40,8 @@ const StudentSchema = new Schema<StudentTypes>(
     },
     deleted: { type: Boolean, required: true, default: false },
     dob: { type: String },
-    admitted:{type:String},
-    registered:{type:String},
+    admitted:{type:Date},
+    registered:{type:Date},
 
     location: { type: String },
     gender: { type: String },

@@ -3,11 +3,11 @@ import Team, { TeamAttendandance } from "../models/Team";
 import { decodeToken, generateToken } from "../utils/token";
 import { staffResetTemplates } from "../utils/emailTemplate";
 import { sendEmail } from "../utils/sendEmail";
-import { comparePassword, hashingPassword } from "../utils/PasswordUtils";
+import { comparePassword, hashingPassword } from "../utils/PasswordUtils"; 
 import { generateRandom4Digit } from "../utils/generateRandomNumber";
 import { sendMessage } from "../utils/sendSms";
 import { Institution } from "../models/institution";
-import { Access } from "../models/Access";
+import { Access } from "../models/Access"; 
 
 
 export class TeamControllers {

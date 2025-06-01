@@ -4,9 +4,6 @@ import Transaction from "../models/Transaction";
 import Payment from "../models/payment";
 import Course from "../models/Course";
 import Cashflow from "../models/cashFlow";
-import { comparePassword } from "../utils/PasswordUtils";
-import { sendEmail } from "../utils/sendEmail";
-import { generateRandom4Digit } from "../utils/generateRandomNumber";
 import { sendMessage } from "../utils/sendSms";
 import { MessageTemplate } from "../utils/messageBod";
 import mongoose, { ObjectId } from "mongoose";
@@ -95,90 +92,69 @@ export class StudentControllers {
       res.status(500).json({ message: `Error ${error.message} occured` });
     }
   };
-  static changeStatus = async (req: Request, res: Response) => {
-    const id = req.params.id;
-    const { status, user, paymentMethod } = req.body;
-    const loggedUser = (req as any).loggedUser
 
-    try {
-      const student = await Student.findById(id);
-      if (!student) {
-        return res.status(404).json({ message: "Student not found" });
-      }
-      const course = await Course.findById(student.selectedCourse);
-      if (!course) {
-        return res.status(404).json({ message: "Course not found" });
-      }
-      if (status === "registered") {
-        student.registered = new Date(Date.now()).toLocaleDateString()
+static changeStatus = async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const { status, user, paymentMethod } = req.body;
+  const loggedUser = (req as any).loggedUser;
 
-        await Transaction.create({
-          institution: loggedUser.institution,
-          studentId: student._id,
-          amount: 10000,
-          reason: "Registration fees",
-        });
-        await Cashflow.create({
-          institution: loggedUser.institution,
-          user: user,
-          amount: 10000,
-          reason: `${student.name} registration Fees`,
-          payment: paymentMethod,
-          type: "income",
-        });
-        await Payment.create({
-          institution: loggedUser.institution,
-          studentId: student._id,
-          amountDue: course.scholarship,
-          amountDiscounted: course.nonScholarship - course.scholarship,
-        });
-        
-        // await sendMessage(
-        
-        //   MessageTemplate({ name: student.name, amount: 0, remain: 0, course: student.selectedCourse.name }).register,
-        //   [student.phone.toString()]
-        // );
 
-      }
-      else if (status === 'accepted') {
-        student.admitted = new Date(Date.now()).toLocaleDateString()
-        // await sendMessage(
-        //   MessageTemplate({
-        //     name: student.name,
-        //     amount: 0,
-        //     remain: 0,
-        //     //@ts-expect-error populated course
-        //     course: student.selectedCourse.name,
-        //   }).admit,
-        //   [student.phone.toString()]
-        // );
-
-      }
-
-      res.status(200).json({ message: `student new status ${status}` });
-    } catch (error: any) {
-      res.status(500).json({ message: `${error.message} occured` });
+  try {
+    const student = await Student.findById(id)
+    if (!student) {
+  
+      return res.status(404).json({ message: "Student not found" });
     }
-  };
-  // static pay = async (req: Request, res: Response) => {
-  //   const { id } = req.params;
-  //   const { amount } = req.body;
 
-  //   try {
-  //     const student = await Student.findById(id);
-  //     if (!student) {
-  //       return res.status(404).json({ message: "student not found" });
-  //     }
+    const course = await Course.findById(student.selectedCourse)
+    if (!course) {
+      return res.status(404).json({ message: "Course not found" });
+    }
 
-  //     await Transaction.create({
-  //       studentId: student._id,
-  //       amount,
-  //       reason: "school fees fees",
-  //     });
-  //   } catch (error: any) {
-  //     res.status(500).json({ message: `Error ${error.message} occured` });
-  //   }
-  // };
+    if (status === "registered") {
+      student.registered = new Date();
+
+      await Transaction.create({
+        institution: loggedUser.institution,
+        studentId: student._id,
+        amount: 10000,
+        reason: "Registration fees",
+      });
+
+      await Cashflow.create({
+        institution: loggedUser.institution,
+        user: user,
+        amount: 10000,
+        reason: `${student.name} registration Fees`,
+        payment: paymentMethod,
+        type: "income",
+      });
+
+      await Payment.create({
+        institution: loggedUser.institution,
+        studentId: student._id,
+        amountDue: course.scholarship,
+        amountDiscounted: course.nonScholarship - course.scholarship,
+      });
+    } else if (status === 'accepted') { 
+      student.admitted = new Date();
+    }
+
+    student.status = status;
+    await student.save();
+
+  
+
+
+    res.status(200).json({ message: `student new status ${status}` });
+
+  } catch (error: any) {
+   
+    res.status(500).json({ message: `${error.message} occurred` });
+  }
+};
+
+ 
   static registerNew = async (req: any, res: Response) => {
     const session = await mongoose.startSession()
     const student = req.body;
@@ -199,7 +175,7 @@ export class StudentControllers {
       student.institution = loggedUser.institution
       const registerStudent = new Student(student);
       registerStudent.status = "registered";
-      registerStudent.registered = new Date(Date.now()).toLocaleDateString()
+      registerStudent.registered = new Date()
       await Payment.create({
         institution: loggedUser.institution,
         studentId: registerStudent._id,

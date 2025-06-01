@@ -43,7 +43,7 @@ const AccessSchema = new Schema<accesstypes>({
     default: Date.now
   },
   updatedAt: {
-    type: Date,
+    type:Date,
     default: Date.now
   },
   deleted:{type:Boolean,required:true, default:false}

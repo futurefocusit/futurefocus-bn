@@ -37,8 +37,8 @@ app.get("/", (req, res) => {
   res.send("Welcome to Future Focus");
 });
 
-app.use("/api/v1", indexRouter);
-startBackup()
+app.use("/api/v1", indexRouter); 
+// startBackup() 
 
 app.listen(PORT, async () => {
   await connection();

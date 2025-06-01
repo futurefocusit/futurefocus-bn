@@ -1,4 +1,4 @@
-import mongoose, { Date, Document, ObjectId, Schema, Types } from "mongoose";
+import mongoose, {  Document, ObjectId, Schema, Types } from "mongoose";
 export interface TaskTypes extends Document {
   institution: ObjectId;
   user: ObjectId;
@@ -28,8 +28,8 @@ export interface CommentTypes {
 }
 export interface StudentTypes extends Document {
   institution: ObjectId;
-  admitted:string
-  registered:string
+  admitted:Date
+  registered:Date
   name: string;
   email: string;
   phone: Number;
