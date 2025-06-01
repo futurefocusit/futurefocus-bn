@@ -9,6 +9,7 @@ interface IMaterial {
   type: string;
   rent: number;
   deleted:boolean
+  owning:boolean
 }
 export interface IMaterialRent {
   _id?:ObjectId,
@@ -62,7 +63,9 @@ const MaterialSchema = new Schema<IMaterial>(
     SN: { type: String },
     type: { type: String },
     rent: { type: Number, required: true, default: 0 },
-  deleted:{type:Boolean,default:false}
+    deleted:{type:Boolean,default:false},
+    owning:{type:Boolean,default:true},
+  
 
   },
   {
@@ -86,7 +89,8 @@ const MaterialRentSchema = new Schema<IMaterialRent>({
   returned: { type: Boolean, default: false },
   cost: { type: Number, required: true, default: 0 },
   amount: { type: Number, required: true, default: 0 },
-  deleted:{type:Boolean,required:true, default:false}
+  deleted:{type:Boolean,required:true, default:false},
+  
 
 },{
   timestamps:true
