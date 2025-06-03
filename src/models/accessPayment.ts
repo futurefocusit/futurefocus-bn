@@ -8,7 +8,7 @@ const AccessPaymentSchema = new Schema<AccessPaymentTypes>({
     ref: "Institution",
   },
   amount: { type: Number, required: true },
-   deleted:{type:Boolean,required:true, default:false}
+  deleted:{type:Boolean,required:true, default:false}
 
 }, { timestamps: true });
 export const AccessPayment = model<AccessPaymentTypes>("AccesPayment", AccessPaymentSchema)

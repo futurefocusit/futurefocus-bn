@@ -65,7 +65,7 @@ export class InstitutionControllers {
                 image: logo.url,
                 password: await hashingPassword(password),
                 position: "Admin",
-            }], { session });
+            }],);
 
             // Create API credentials
             await API.create([{
@@ -73,7 +73,7 @@ export class InstitutionControllers {
                 api_key: generateAPIKey(),
                 api_name: name + " web API",
                 secret_key: generateSecret(),
-            }], { session });
+            }]);
 
             // Send email notification
             const mailOptions = {

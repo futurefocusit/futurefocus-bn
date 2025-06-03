@@ -24,7 +24,7 @@ const AccessTransactionSchema = new Schema<AccessTransactionTypes>({
     amount: { type: Number, required: true },
     type: {
         type: String,
-        enum: ["subscription", "renewal", "upgrade", "feature_add"],
+        enum: ["subscription", "renewal", "upgrade"],
         required: true,
     },
     status: {
