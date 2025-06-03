@@ -24,8 +24,8 @@ export class InstitutionControllers {
 
             // Check for existing institution or admin in parallel
             const [inst, adm] = await Promise.all([
-                Institution.findOne({ $or: [{ email }, { phone }] }).session(session),
-                Team.findOne({ email }).session(session),
+                Institution.findOne({ $or: [{ email }, { phone }] }),
+                Team.findOne({ email }),
             ]);
 
             if (inst || adm) {
@@ -34,12 +34,12 @@ export class InstitutionControllers {
             }
 
             // Create institution
-            const newInst = await Institution.create([{ name, email, phone, logo: logo.url }], { session });
+            const newInst = await Institution.create([{ name, email, phone, logo: logo.url }]);
             const institution = newInst[0];
 
             // Get permissions and create role
             const [permissions] = await Promise.all([
-                Permission.find().session(session)
+                Permission.find()
             ]);
 
             const role = await Role.create([{
@@ -47,7 +47,7 @@ export class InstitutionControllers {
                 role: "Admin",
                 permission: permissions,
                 
-            }], { session });
+            }]);
 
             if (!role[0]) {
                 await session.abortTransaction();
@@ -92,7 +92,7 @@ export class InstitutionControllers {
             console.error("Registration error: ", error);
             return res.status(500).json({ message: "Internal server error" });
         } finally {
-            session.endSession();
+            session.endSession(); 
         }
     };
 
