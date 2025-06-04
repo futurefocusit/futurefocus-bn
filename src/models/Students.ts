@@ -2,7 +2,7 @@ import mongoose, { model, Schema } from "mongoose";
 import { StudentTypes } from "../types/Types";
 
 // Define the Student schema
-const StudentSchema = new Schema<StudentTypes>( 
+const StudentSchema = new Schema<StudentTypes>(
   {
     institution: {
       type: mongoose.Schema.Types.ObjectId,
@@ -10,8 +10,9 @@ const StudentSchema = new Schema<StudentTypes>(
       required: true,
     },
     name: { type: String, required: false },
-    email: { type: String, required: true, default: "academic@futurefocus.rw" },
+    email: { type: String, },
     phone: { type: String, required: true },
+    secondPhone: { type: String},
     selectedCourse: {
       type: Schema.Types.ObjectId,
       ref: "Course",
@@ -40,8 +41,8 @@ const StudentSchema = new Schema<StudentTypes>(
     },
     deleted: { type: Boolean, required: true, default: false },
     dob: { type: String },
-    admitted:{type:Date},
-    registered:{type:Date},
+    admitted: { type: Date },
+    registered: { type: Date },
 
     location: { type: String },
     gender: { type: String },

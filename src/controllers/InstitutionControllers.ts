@@ -127,7 +127,7 @@ export class InstitutionControllers {
 
         try {
             const { id } = req.body;
-            const inst = await Institution.findById(id).session(session);
+            const inst = await Institution.findById(id);
 
             if (!inst) {
                 await session.abortTransaction();
@@ -188,8 +188,8 @@ export class InstitutionControllers {
             const { amount, months, id } = req.body;
 
             const [inst, accessInst] = await Promise.all([
-                Institution.findById(id).session(session),
-                Access.findOne({ institution: id,deleted:false }).session(session)
+                Institution.findById(id),
+                Access.findOne({ institution: id,deleted:false })
             ]);
 
             if (!inst) {
@@ -235,8 +235,8 @@ export class InstitutionControllers {
             const { amount, months, id, features } = req.body;
 
             const [inst, accessInst] = await Promise.all([
-                Institution.findById(id).session(session),
-                Access.findOne({ institution: id }).session(session)
+                Institution.findById(id),
+                Access.findOne({ institution: id })
             ]);
 
             if (!inst) {
@@ -286,7 +286,7 @@ export class InstitutionControllers {
         try {
             const { features, institution, month } = req.body;
 
-            const access = await Access.findOne({ institution,deleted:false }).session(session);
+            const access = await Access.findOne({ institution,deleted:false });
             if (!access) {
                 await session.abortTransaction();
                 return res.status(400).json({ message: "No access found! Contact support team" });

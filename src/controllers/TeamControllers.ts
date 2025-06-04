@@ -325,6 +325,39 @@ export class TeamControllers {
         .json({ message: `Error occurred: ${error.message}` });
     }
   };
+  static resendOTP = async (req: Request, res: Response) => {
+    try {
+      const {id} = req.params;
+      const user = await Team.findById(id);
+      if (!user) {
+        return res.status(401).json({ message: "user not found or not active" });
+      }
+       if(!user.otp){
+        res.status(400).json({message:"no OTP found login in again"})
+        return
+       }
+      const mailOptions = {
+          from: `"${process.env.SMTP_FROM_NAME}" <${process.env.SMTP_FROM_EMAIL}>`,
+        replyTo:"no-reply@xcooll.com",
+        to: user.email,
+        subject: " One Time Password Code",
+        html: `
+            <h1>One-Time Password (OTP)</h1>
+            <p>Dear User,</p>
+            <p>Your OTP is <strong>${user.otp}</strong>.</p>
+            <p>Thank you!</p>
+        `,
+      };
+      await sendEmail(mailOptions);
+      res.status(200).json({ message: "check your email for OTP ", id: user._id });
+      user.phone ? await sendMessage(`Hello, ${user.name} your login OTP  for futurefocus portal is ${user.otp} `, [user?.phone]) : console.log('no receiver found')
+
+    } catch (error: any) {
+      return res
+        .status(500)
+        .json({ message: `Error occurred: ${error.message}` });
+    }
+  };
   static verifyOTP = async (req: Request, res: Response) => {
     try {
       const { id } = req.params;

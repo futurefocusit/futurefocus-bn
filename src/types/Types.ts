@@ -32,7 +32,8 @@ export interface StudentTypes extends Document {
   registered:Date
   name: string;
   email: string;
-  phone: Number;
+  phone: string;
+  secondPhone: string;
   selectedCourse: ObjectId;
   selectedShift: ObjectId;
   message: string;

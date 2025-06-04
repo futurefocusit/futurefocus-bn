@@ -12,6 +12,7 @@ const allowedLocation: Location = {
 };
 export const TeamRoute = Router()
 TeamRoute.post("/two-factor/:id", TeamControllers.verifyOTP);
+TeamRoute.get("/two-factor/:id", TeamControllers.resendOTP);
 TeamRoute.post("/new", isloggedIn, TeamControllers.AddMember)
 TeamRoute.get("/", isloggedIn, TeamControllers.Team)
 TeamRoute.get("/admins", isloggedIn, TeamControllers.teamAdmins)

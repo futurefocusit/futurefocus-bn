@@ -38,7 +38,7 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1", indexRouter); 
-startBackup() 
+// startBackup() 
 
 app.listen(PORT, async () => {
   await connection();
