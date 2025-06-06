@@ -23,7 +23,7 @@ export class StudentControllers {
       studentData.selectedCourse = studentData.selectedCourse as ObjectId
       studentData.selectedShift = studentData.selectedShift as ObjectId
       studentData.institution = req.api.inst
-      studentData.identity = req.body.identity.url
+      studentData.image = req.body.image.url
 
       await Student.create(studentData);
       await sendMessage(

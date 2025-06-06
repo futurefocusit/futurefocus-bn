@@ -11,7 +11,7 @@ import cloudinary from "../config/multer";
 
 
 export const StudentRoutes =  Router()
-StudentRoutes.post('/apply',uploadSingle('identity',cloudinary), authenticateAPI,StudentControllers.apply)
+StudentRoutes.post('/apply',uploadSingle('image',cloudinary), authenticateAPI,StudentControllers.apply)
 StudentRoutes.post('/past',isloggedIn,StudentControllers.pastRecord)
 StudentRoutes.get("/", 
     // isVerified,

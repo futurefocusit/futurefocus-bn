@@ -41,13 +41,15 @@ export interface StudentTypes extends Document {
   comment: string;
   status: string;
   intake: string;
+  image:string
   dob:string,
   location:string,
   gender:string,
   identity:string,
   nationality:string
   deleted:boolean
-   deletedBy:ObjectId
+  deletedBy:ObjectId
+   nid:string
   
 }
 export interface TeamTypes extends Document {

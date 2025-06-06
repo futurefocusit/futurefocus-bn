@@ -43,11 +43,12 @@ const StudentSchema = new Schema<StudentTypes>(
     dob: { type: String },
     admitted: { type: Date },
     registered: { type: Date },
-
     location: { type: String },
     gender: { type: String },
     identity: { type: String },
-    nationality: { type: String }
+    image: { type: String },
+    nationality: { type: String },
+    nid:{type:String,required:true}
   },
   {
     timestamps: true,
