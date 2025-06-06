@@ -107,10 +107,10 @@ export class taskController {
       return res.status(500).json({ message: "Internal server error" });
     }
   };
-  static delete = async (req: Request, res: Response) => {
+  static delete = async (req: any, res: Response) => {
     try {
       const { id } = req.params;
-      await Task.findByIdAndUpdate(id,{deleted:true});
+      await Task.findByIdAndUpdate(id,{deleted:true,deletedBy:req.loggedUser._id});
       // const comments = await Comment.find({ task: id });
       // await Promise.all(
       //   comments.map(async (comment) => {

@@ -69,25 +69,25 @@ export class DeletedController {
                     let deletedDocs;
                     switch (modelName) {
                         case 'Payment':
-                            deletedDocs = await (model as any).find(query).populate('studentId').lean();
+                            deletedDocs = await (model as any).find(query).populate('studentId').populate('deletedBy').lean();
                             break;
                         case 'Task':
-                            deletedDocs = await (model as any).find(query).populate('user manager').lean();
+                            deletedDocs = await (model as any).find(query).populate('user manager').populate('deletedBy').lean();
                             break;
                         case 'MaterialRent':
-                            deletedDocs = await (model as any).find(query).populate('render receiver').lean();
+                            deletedDocs = await (model as any).find(query).populate('render receiver').populate('deletedBy').lean();
                             break;
                         case 'Team':
-                            deletedDocs = await (model as any).find(query).populate('role').lean();
+                            deletedDocs = await (model as any).find(query).populate('role').populate('deletedBy').lean();
                             break;
                         case 'Role':
-                            deletedDocs = await (model as any).find(query).populate('permission').lean();
+                            deletedDocs = await (model as any).find(query).populate('permission').populate('deletedBy').lean();
                             break;
                         case 'Permission':
-                            deletedDocs = await (model as any).find(query).populate('feature').lean();
+                            deletedDocs = await (model as any).find(query).populate('feature').populate('deletedBy').lean();
                             break;
                         default:
-                            deletedDocs = await (model as any).find(query).lean();
+                            deletedDocs = await (model as any).find(query).populate('deletedBy').lean();
                     }
 
                     if (deletedDocs.length > 0) {

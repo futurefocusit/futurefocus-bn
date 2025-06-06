@@ -76,17 +76,17 @@ export class StudentControllers {
       res.status(500).json({ message: `Error ${error.message} occurred` });
     }
   };
-  static delete = async (req: Request, res: Response) => {
+  static delete = async (req: any, res: Response) => {
     const id = req.params.id;
     const loggedUser = (req as any).loggedUser
 
     try {
-      const student = await Student.findByIdAndUpdate(id,{deleted:true});
+      const student = await Student.findByIdAndUpdate(id,{deleted:true,deletedBy:req.loggedUser._id});
 
       if (!student) {
         return res.status(404).json({ message: "Student not found" });
       }
-      await Payment.findOneAndUpdate({ studentId: student._id },{deleted:true});
+      await Payment.findOneAndUpdate({ studentId: student._id },{deleted:true,deletedBy:req.loggedUser._id});
       res.status(200).json({ message: "student deleted successfully" });
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} occured` });

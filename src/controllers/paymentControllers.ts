@@ -185,27 +185,27 @@ export class PaymentController {
       res.status(500).json({ message: "internal sever error", error });
     }
   };
-  static deleteTransaction = async (req: Request, res: Response) => {
+  static deleteTransaction = async (req: any, res: Response) => {
     const { id } = req.params;
     try {
       const transaction = await Transaction.findById(id);
       if (!transaction) {
         return res.status(400).json({ message: "no transaction found" });
       }
-      await Transaction.updateOne({ _id: id},{deleted:true} );
+      await Transaction.updateOne({ _id: id},{deleted:true,deletedBy:req.loggedUser._id} );
       return res.status(200).json({ message: "deleted successfully" });
     } catch (error) {
       return res.status(500).json({ message: "interanl server error" });
     }
   };
-  static deletePayment = async (req: Request, res: Response) => {
+  static deletePayment = async (req: any, res: Response) => {
     const { id } = req.params;
     try {
-      const payment = await Payment.findOneAndUpdate({ studentId: id },{deleted:true});
+      const payment = await Payment.findOneAndUpdate({ studentId: id },{deleted:true,deletedBy:req.loggedUser._id});
       if (!payment) {
         return res.status(400).json({ message: "no payment  found" });
       }
-      await Student.findByIdAndUpdate(id,{deleted:true});
+      await Student.findByIdAndUpdate(id,{deleted:true,deletedBy:req.loggedUser._id});
       return res.status(200).json({ message: "deleted successfully" });
     } catch (error) {
       return res.status(500).json({ message: "interanl server error" });

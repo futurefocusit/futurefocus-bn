@@ -4,6 +4,7 @@ export interface IIntake {
   institution:ObjectId
   intake: string;
   deleted:boolean
+  deletedBy:ObjectId
 }
 const IntakeSchema = new Schema<IIntake>(
   {
@@ -13,7 +14,8 @@ const IntakeSchema = new Schema<IIntake>(
       required: true,
     },
     intake: { type: String, required: true },
-    deleted:{type:Boolean,default:false}
+    deleted:{type:Boolean,default:false},
+   deletedBy:{type:mongoose.Types.ObjectId, ref:"Team"}
 
   },
   {
@@ -31,6 +33,7 @@ export interface IShift {
   start: String;
   end: String;
   deleted:boolean
+   deletedBy:ObjectId
 }
 const ShiftSchema = new Schema<IShift>(
   {
@@ -43,7 +46,8 @@ const ShiftSchema = new Schema<IShift>(
     days: { type: String, required: true },
     start: { type: String, required: true },
     end: { type: String, required: true },
-     deleted:{type:Boolean,required:true, default:false}
+     deleted:{type:Boolean,required:true, default:false},
+      deletedBy:{type:mongoose.Types.ObjectId, ref:"Team"}
 
   },
   {

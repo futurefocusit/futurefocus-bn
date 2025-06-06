@@ -10,6 +10,7 @@ interface IMaterial {
   rent: number;
   deleted:boolean
   owning:boolean
+   deletedBy:ObjectId
 }
 export interface IMaterialRent {
   _id?:ObjectId,
@@ -24,6 +25,7 @@ export interface IMaterialRent {
   amount: number;
   cost: number;
   deleted:boolean
+   deletedBy:ObjectId
   
 }
 interface IInventory {
@@ -31,6 +33,7 @@ interface IInventory {
   institution: 
      mongoose.Schema.Types.ObjectId,
      deleted:boolean
+      deletedBy:ObjectId
    
 }
 
@@ -42,7 +45,8 @@ const InventorySchema = new Schema<IInventory>({
     ref: "Institution",
     required: true,
   },
-  deleted:{type:Boolean,default:false}
+  deleted:{type:Boolean,default:false},
+   deletedBy:{type:mongoose.Types.ObjectId, ref:"Team"}
 
 });
 
@@ -65,7 +69,7 @@ const MaterialSchema = new Schema<IMaterial>(
     rent: { type: Number, required: true, default: 0 },
     deleted:{type:Boolean,default:false},
     owning:{type:Boolean,default:true},
-  
+   deletedBy:{type:mongoose.Types.ObjectId, ref:"User"}
 
   },
   {
@@ -90,7 +94,7 @@ const MaterialRentSchema = new Schema<IMaterialRent>({
   cost: { type: Number, required: true, default: 0 },
   amount: { type: Number, required: true, default: 0 },
   deleted:{type:Boolean,required:true, default:false},
-  
+   deletedBy:{type:mongoose.Types.ObjectId, ref:"User"}
 
 },{
   timestamps:true

@@ -1,4 +1,4 @@
-import { model, Schema } from "mongoose";
+import mongoose, { model, Schema } from "mongoose";
 import { InstitutionTypes } from "../types/Types";
 
 const InstitutionSchema = new Schema<InstitutionTypes>({
@@ -9,7 +9,8 @@ const InstitutionSchema = new Schema<InstitutionTypes>({
   logo:{type:String},
   verified:{type:Boolean,required:true, default:false},
   website:{type:String},
-  deleted:{type:Boolean,required:true, default:false}
+  deleted:{type:Boolean,required:true, default:false},
+   deletedBy:{type:mongoose.Types.ObjectId, ref:"Team"}
 
 },{timestamps:true});
 export const Institution = model<InstitutionTypes>("Institution",InstitutionSchema)

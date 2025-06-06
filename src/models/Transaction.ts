@@ -11,8 +11,8 @@ const transactionSchema = new Schema<transactionTypes>(
     },
     amount: { type: Number, required: true },
     reason: { type: String, default: "" },
-   deleted:{type:Boolean,required:true, default:false}
-
+   deleted:{type:Boolean,required:true, default:false},
+   deletedBy:{type:mongoose.Types.ObjectId, ref:"Team"}
   },
   {
     timestamps: true,

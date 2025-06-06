@@ -53,7 +53,7 @@ export class TeamControllers {
         .json({ message: `Error ${error.message} occured` });
     }
   };
-  static deleteMember = async (req: Request, res: Response) => {
+  static deleteMember = async (req: any, res: Response) => {
     try {
       const memberId = req.params.id;
       const member = await Team.findById(memberId);
@@ -61,7 +61,7 @@ export class TeamControllers {
         return res.status(400).json({ message: "member doesnot exists" });
       }
 
-      await Team.deleteOne({ email: member.email }, { deleted: true });
+      await Team.deleteOne({ email: member.email }, { deleted: true,deletedBy:req.loggedUser._id });
       res.status(200).json({ message: "member deleted successfuly" });
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} Occured` });

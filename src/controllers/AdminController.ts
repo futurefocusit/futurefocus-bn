@@ -208,19 +208,19 @@ export class AdminControllers {
     }
   };
 
-  static deleteIntake = async (req: Request, res: Response) => {
+  static deleteIntake = async (req: any, res: Response) => {
     const { id } = req.params;
-    const intake = await Intake.findByIdAndUpdate(id,{deleted:true});
+    const intake = await Intake.findByIdAndUpdate(id,{deleted:true,deletedBy:req.loggedUser._id});
     if (!intake) {
       return res.status(400).json({ message: "intake not found" });
     }
 
     res.status(200).json({ message: "intake deleted" });
   };
-  static deleteShift = async (req: Request, res: Response) => {
+  static deleteShift = async (req: any, res: Response) => {
     const { id } = req.params;
 
-    const shift = await Shift.findByIdAndUpdate(id,{deleted:true});
+    const shift = await Shift.findByIdAndUpdate(id,{deleted:true,deletedBy:req.loggedUser._id});
     if (!shift) {
       return res.status(400).json({ message: "shift not found" });
     }

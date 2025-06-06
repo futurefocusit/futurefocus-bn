@@ -46,7 +46,8 @@ const AccessSchema = new Schema<accesstypes>({
     type:Date,
     default: Date.now
   },
-  deleted:{type:Boolean,required:true, default:false}
+  deleted:{type:Boolean,required:true, default:false},
+  deletedBy:{type:mongoose.Types.ObjectId, ref:"Team"}
 });
 
 // Add middleware to update the updatedAt field

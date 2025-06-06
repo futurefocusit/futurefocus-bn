@@ -29,10 +29,10 @@ export class cashflowControler {
 
     }
   }
-  static delete = async (req: Request, res: Response) => {
+  static delete = async (req: any, res: Response) => {
     const { id } = req.params
     try {
-      await Cashflow.findByIdAndUpdate(id,{deleted:true})
+      await Cashflow.findByIdAndUpdate(id,{deleted:true,deletedBy:req.loggedUser._id})
       res.status(200).json({ message: "deleted successfully" })
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} ocuured` });

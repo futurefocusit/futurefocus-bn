@@ -1,7 +1,6 @@
 import mongoose, { model, Schema } from "mongoose";
 import { StudentTypes } from "../types/Types";
 
-// Define the Student schema
 const StudentSchema = new Schema<StudentTypes>(
   {
     institution: {
@@ -40,6 +39,7 @@ const StudentSchema = new Schema<StudentTypes>(
       default: "pending",
     },
     deleted: { type: Boolean, required: true, default: false },
+     deletedBy:{type:mongoose.Types.ObjectId, ref:"Team"},
     dob: { type: String },
     admitted: { type: Date },
     registered: { type: Date },

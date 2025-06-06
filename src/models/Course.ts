@@ -1,5 +1,6 @@
 import mongoose, { model, Schema } from "mongoose";
 import { CourseTypes } from "../types/Types";
+import { timeStamp } from "console";
 
 
 const CourseSchema = new Schema<CourseTypes>({
@@ -15,8 +16,9 @@ const CourseSchema = new Schema<CourseTypes>({
   shifts: { type: [Schema.Types.ObjectId], ref: "shift" },
   scholarship: { type: Number },
   nonScholarship: { type: Number, },
-  deleted:{type:Boolean,required:true, default:false}
+  deleted:{type:Boolean,required:true, default:false},
+   deletedBy:{type:mongoose.Types.ObjectId, ref:"Team"}
 
-});
+},{timestamps:true});
 const Course = model<CourseTypes>("Course", CourseSchema)
 export default Course

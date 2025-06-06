@@ -15,8 +15,8 @@ const RoleSchema = new Schema<RoleTypes>(
       required: true,
       ref: "Permission",
     },
- deleted:{type:Boolean,required:true, default:false}
-
+ deleted:{type:Boolean,required:true, default:false},
+ deletedBy:{type:mongoose.Types.ObjectId, ref:"Team"}
   },
   {
     timestamps: true,

@@ -81,8 +81,8 @@ export const replySchema = new Schema<ReplyTypes>({
     type: Schema.Types.ObjectId,
     ref: "Comment",
   },
-  deleted:{type:Boolean,required:true, default:false}
-
+  deleted:{type:Boolean,required:true, default:false},
+   deletedBy:{type:mongoose.Types.ObjectId, ref:"Team"}
 },{
   timestamps: true,
 });

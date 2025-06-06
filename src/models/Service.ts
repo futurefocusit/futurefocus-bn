@@ -10,9 +10,9 @@ const ServiceSchema= new Schema<ServiceTypes>({
   icon: { type: String, required: true },
   subservices:{type:[String], required:true},
   title:{type:String, required:true},
-  deleted:{type:Boolean,required:true, default:false}
+  deleted:{type:Boolean,required:true, default:false},
+   deletedBy:{type:mongoose.Types.ObjectId, ref:"Team"}
 
-
-});
+},{timestamps:true});
 const Service = model<ServiceTypes>("Service", ServiceSchema )
 export default Service
