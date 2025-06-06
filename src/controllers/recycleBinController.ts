@@ -69,25 +69,25 @@ export class DeletedController {
                     let deletedDocs;
                     switch (modelName) {
                         case 'Payment':
-                            deletedDocs = await (model as any).find(query).populate('studentId').populate('deletedBy').lean();
+                            deletedDocs = await (model as any).find(query).populate('studentId').populate('deletedBy').sort({ updatedAt: -1 }).lean();
                             break;
                         case 'Task':
-                            deletedDocs = await (model as any).find(query).populate('user manager').populate('deletedBy').lean();
+                            deletedDocs = await (model as any).find(query).populate('user manager').populate('deletedBy').sort({ updatedAt: -1 }).lean();
                             break;
                         case 'MaterialRent':
-                            deletedDocs = await (model as any).find(query).populate('render receiver').populate('deletedBy').lean();
+                            deletedDocs = await (model as any).find(query).populate('render receiver').populate('deletedBy').sort({ updatedAt: -1 }).lean();
                             break;
                         case 'Team':
-                            deletedDocs = await (model as any).find(query).populate('role').populate('deletedBy').lean();
+                            deletedDocs = await (model as any).find(query).populate('role').populate('deletedBy').sort({ updatedAt: -1 }).lean();
                             break;
                         case 'Role':
-                            deletedDocs = await (model as any).find(query).populate('permission').populate('deletedBy').lean();
+                            deletedDocs = await (model as any).find(query).populate('permission').populate('deletedBy').sort({ updatedAt: -1 }).lean();
                             break;
                         case 'Permission':
-                            deletedDocs = await (model as any).find(query).populate('feature').populate('deletedBy').lean();
+                            deletedDocs = await (model as any).find(query).populate('feature').populate('deletedBy').sort({ updatedAt: -1 }).lean();
                             break;
                         default:
-                            deletedDocs = await (model as any).find(query).populate('deletedBy').lean();
+                            deletedDocs = await (model as any).find(query).populate('deletedBy').sort({ updatedAt: -1 }).lean();
                     }
 
                     if (deletedDocs.length > 0) {
