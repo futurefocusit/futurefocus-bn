@@ -48,7 +48,7 @@ const StudentSchema = new Schema<StudentTypes>(
     identity: { type: String },
     image: { type: String },
     nationality: { type: String },
-    nid:{type:String,required:true}
+    nid:{type:String}
   },
   {
     timestamps: true,

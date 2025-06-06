@@ -273,7 +273,7 @@ export class TeamControllers {
   static login = async (req: Request, res: Response) => {
     try {
       const { email, password } = req.body;
-      const user = await Team.findOne({ email, active: true });
+      const user = await Team.findOne({ email, active: true,deleted:false });
       if (!user) {
         return res.status(401).json({ message: "Email not found or not active" });
       }
