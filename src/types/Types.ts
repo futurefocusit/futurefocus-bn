@@ -136,6 +136,8 @@ export interface transactionTypes {
   reason: string;
   deleted:boolean
    deletedBy:ObjectId
+   receiver:ObjectId,
+   method:'momo'|'bank'|'cash'
 }
 export interface cashflowTypes {
   institution: ObjectId;

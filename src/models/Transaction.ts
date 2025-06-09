@@ -10,7 +10,9 @@ const transactionSchema = new Schema<transactionTypes>(
       ref: "Student",
     },
     amount: { type: Number, required: true },
-    reason: { type: String, default: "" },
+    reason: { type: String,  },
+    method: { type: String, enum:['cash','bank','momo']},
+    receiver:{type:mongoose.Types.ObjectId, ref:"Team"},
    deleted:{type:Boolean,required:true, default:false},
    deletedBy:{type:mongoose.Types.ObjectId, ref:"Team"}
   },

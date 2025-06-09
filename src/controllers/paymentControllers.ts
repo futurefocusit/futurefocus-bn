@@ -42,6 +42,8 @@ export class PaymentController {
       await Transaction.create({
         institution: loggedUser.institution,
         studentId: id,
+        receiver:loggedUser._id,
+        method,
         amount: amount,
         reason: "school fees",
       });
@@ -123,25 +125,54 @@ export class PaymentController {
   };
 
   static payment = async (req: any, res: Response) => {
-    try {
-      const loggedUser = req.loggedUser
+  try {
+    const loggedUser = req.loggedUser;
 
-      const payment = await Payment.find({ institution: loggedUser.institution,deleted:false });
-      res.status(200).json(payment);
-    } catch (error: any) {
-      res.status(500).json({ message: `Error ${error.message} occured` });
-    }
+    // Get all payments for the institution
+    const payments = await Payment.find({
+      institution: loggedUser.institution,
+      deleted: false,
+    }).populate("studentId");
+
+    // Get all transactions for the institution
+    const transactions = await Transaction.find({
+      institution: loggedUser.institution,
+      deleted: false,
+    }).populate("studentId").populate("receiver");
+
+    // Map each payment to include related transactions
+    const result = payments.map((payment: any) => {
+      const relatedTransactions = transactions.filter(
+        (tx: any) =>
+          tx.studentId &&
+          tx.studentId?._id?.toString() === payment.studentId?._id?.toString()
+      );
+
+      return {
+        ...payment.toObject(),
+        transactions: relatedTransactions,
+      };
+    });
+
+    res.status(200).json(result);
+  } catch (error: any) {
+    res.status(500).json({ message: `Error ${error.message} occurred` });
+  }
+
+
   };
+
   static getTansactions = async (req: any, res: Response) => {
     try {
       const loggedUser = req.loggedUser
 
-      const transactions = await Transaction.find({ institution: loggedUser.institution,deleted:false }).populate("studentId");
+      const transactions = await Transaction.find({ institution: loggedUser.institution,deleted:false }).populate("studentId").populate("receiver");
       res.status(200).json(transactions);
     } catch (error: any) {
-      res.status(500).json({ message: `Eror ${error.message} occured` });
+      res.status(500).json({ message: `Erorr ${error.message} occured` });
     }
   };
+
   static addExtra = async (req: Request, res: Response) => {
     const { id } = req.params;
     const { amount } = req.body;
@@ -173,6 +204,11 @@ export class PaymentController {
         return res
           .status(400)
           .json({ message: "no payment record for that user" });
+      }
+      if(payment.amountDue<amount){
+        return res
+          .status(400)
+          .json({ message: "amount due is lower than discount" });
       }
 
       payment.amountDiscounted = payment.amountDiscounted

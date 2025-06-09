@@ -185,6 +185,7 @@ static changeStatus = async (req: Request, res: Response) => {
         institution: loggedUser.institution,
         studentId: registerStudent._id,
         amount: 10000,
+        method: student.payment,
         reason: "Registration fees",
       });
       await Cashflow.create({

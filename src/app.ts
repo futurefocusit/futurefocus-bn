@@ -38,10 +38,11 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1", indexRouter); 
-startBackup() 
 
 app.listen(PORT, async () => {
   await connection();
+startBackup() 
+
   console.log(`App is listening at http://localhost:${PORT}`);
 });
 
