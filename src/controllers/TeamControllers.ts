@@ -8,6 +8,7 @@ import { generateRandom4Digit } from "../utils/generateRandomNumber";
 import { sendMessage } from "../utils/sendSms";
 import { Institution } from "../models/institution";
 import { Access } from "../models/Access"; 
+import { Options } from "nodemailer/lib/mailer";
 
 
 export class TeamControllers {
@@ -22,7 +23,21 @@ export class TeamControllers {
       }
       const password = await hashingPassword('00000000')
       await Team.create({ name, title, image, salary, dateJoined,contractSummary, email, position, instagram, password, institution: loggedUser.institution });
-      return res.status(200).json({ messsage: "member added" });
+       res.status(200).json({ messsage: "member added" });
+       const mailOptions:Options = {
+         from: `"${process.env.SMTP_FROM_NAME}" <${process.env.SMTP_FROM_EMAIL}>`,
+        replyTo:"no-reply@xcooll.com",
+        to: email.email,
+        subject: "Welcome to Future Focus",
+        text:`hello ${name} welcome to xcooll your login credentisl are
+        email:${email},
+        password:00000000
+        you can login here: https://xcooll.com/login .
+        or reset password here!
+        https://xcooll.com/forgot-password
+        `
+       }
+       await sendEmail(mailOptions)
     } catch (error: any) {
       return res
         .status(500)
