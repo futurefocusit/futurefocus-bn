@@ -22,7 +22,7 @@ const CashflowSchema = new Schema<cashflowTypes>(
     payment: { type: String, default: "Cash", required: true },
     type: { type: String, required: true, enum: ["income", "expenses"] },
  deleted:{type:Boolean,required:true, default:false},
-  deletedBy:{type:mongoose.Types.ObjectId, ref:"Team"}
+  deletedBy:{type:String}
 
   },
   {

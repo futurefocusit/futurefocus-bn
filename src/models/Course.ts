@@ -17,7 +17,7 @@ const CourseSchema = new Schema<CourseTypes>({
   scholarship: { type: Number },
   nonScholarship: { type: Number, },
   deleted:{type:Boolean,required:true, default:false},
-   deletedBy:{type:mongoose.Types.ObjectId, ref:"Team"}
+   deletedBy:{type:String}
 
 },{timestamps:true});
 const Course = model<CourseTypes>("Course", CourseSchema)

@@ -15,7 +15,7 @@ const IntakeSchema = new Schema<IIntake>(
     },
     intake: { type: String, required: true },
     deleted:{type:Boolean,default:false},
-   deletedBy:{type:mongoose.Types.ObjectId, ref:"Team"}
+   deletedBy:{type:String}
 
   },
   {
@@ -33,7 +33,7 @@ export interface IShift {
   start: String;
   end: String;
   deleted:boolean
-   deletedBy:ObjectId
+   deletedBy:String
 }
 const ShiftSchema = new Schema<IShift>(
   {
@@ -47,7 +47,7 @@ const ShiftSchema = new Schema<IShift>(
     start: { type: String, required: true },
     end: { type: String, required: true },
      deleted:{type:Boolean,required:true, default:false},
-      deletedBy:{type:mongoose.Types.ObjectId, ref:"Team"}
+      deletedBy:{type:String}
 
   },
   {

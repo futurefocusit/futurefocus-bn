@@ -3,7 +3,6 @@ import { StudentControllers } from "../controllers/StudentsController";
 import { getAttendance,
      updateAttendance 
     } from "../controllers/Attendance";
-import { isVerified } from "../middleware/isVerified";
 import { isloggedIn } from "../middleware/isLoggedIn";
 import { authenticateAPI } from "../middleware/api.auth";
 import uploadSingle from "rod-fileupload";
@@ -20,6 +19,7 @@ StudentRoutes.get("/",
     StudentControllers.students)
 StudentRoutes.delete('/:id',isloggedIn,StudentControllers.delete)
 StudentRoutes.put('/:id',isloggedIn, StudentControllers.changeStatus)
+StudentRoutes.put('/sticky/:id',isloggedIn, StudentControllers.addSticky)
 StudentRoutes.post('/register', isloggedIn,StudentControllers.registerNew)
 StudentRoutes.put("/attend/:studentId",isloggedIn, updateAttendance);
 StudentRoutes.get("/attendance", isloggedIn,getAttendance);

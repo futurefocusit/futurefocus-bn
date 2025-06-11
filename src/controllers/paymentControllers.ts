@@ -42,7 +42,7 @@ export class PaymentController {
       await Transaction.create({
         institution: loggedUser.institution,
         studentId: id,
-        receiver:loggedUser._id,
+        receiver:loggedUser.name,
         method,
         amount: amount,
         reason: "school fees",
@@ -138,7 +138,7 @@ export class PaymentController {
     const transactions = await Transaction.find({
       institution: loggedUser.institution,
       deleted: false,
-    }).populate("studentId").populate("receiver");
+    }).populate("studentId");
 
     // Map each payment to include related transactions
     const result = payments.map((payment: any) => {
@@ -166,7 +166,7 @@ export class PaymentController {
     try {
       const loggedUser = req.loggedUser
 
-      const transactions = await Transaction.find({ institution: loggedUser.institution,deleted:false }).populate("studentId").populate("receiver");
+      const transactions = await Transaction.find({ institution: loggedUser.institution,deleted:false }).populate("studentId");
       res.status(200).json(transactions);
     } catch (error: any) {
       res.status(500).json({ message: `Erorr ${error.message} occured` });
@@ -228,7 +228,7 @@ export class PaymentController {
       if (!transaction) {
         return res.status(400).json({ message: "no transaction found" });
       }
-      await Transaction.updateOne({ _id: id},{deleted:true,deletedBy:req.loggedUser._id} );
+      await Transaction.updateOne({ _id: id},{deleted:true,deletedBy:req.loggedUser.name} );
       return res.status(200).json({ message: "deleted successfully" });
     } catch (error) {
       return res.status(500).json({ message: "interanl server error" });
@@ -237,11 +237,11 @@ export class PaymentController {
   static deletePayment = async (req: any, res: Response) => {
     const { id } = req.params;
     try {
-      const payment = await Payment.findOneAndUpdate({ studentId: id },{deleted:true,deletedBy:req.loggedUser._id});
+      const payment = await Payment.findOneAndUpdate({ studentId: id },{deleted:true,deletedBy:req.loggedUser.name});
       if (!payment) {
         return res.status(400).json({ message: "no payment  found" });
       }
-      await Student.findByIdAndUpdate(id,{deleted:true,deletedBy:req.loggedUser._id});
+      await Student.findByIdAndUpdate(id,{deleted:true,deletedBy:req.loggedUser.name});
       return res.status(200).json({ message: "deleted successfully" });
     } catch (error) {
       return res.status(500).json({ message: "interanl server error" });

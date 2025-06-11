@@ -17,7 +17,7 @@ const PermissionSchema = new Schema<PermissionTypes>(
     },
     permission: { type: String, required: true },
   deleted:{type:Boolean,required:true, default:false},
-   deletedBy:{type:mongoose.Types.ObjectId, ref:"Team"}
+   deletedBy:{type:String}
   },
   {
     timestamps: true,

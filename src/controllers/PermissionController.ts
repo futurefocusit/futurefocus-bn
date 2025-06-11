@@ -38,7 +38,7 @@ export class PermissionCointroller {
     try {
 
       const { id } = req.body;
-      await Role.findByIdAndUpdate(id,{deleted:true,deletedBy:req.loggedUser._id});
+      await Role.findByIdAndUpdate(id,{deleted:true,deletedBy:req.loggedUser.name});
       res.status(201).json({ message: `role created` });
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} Occured` });

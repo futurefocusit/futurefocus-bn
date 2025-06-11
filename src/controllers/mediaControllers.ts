@@ -118,7 +118,7 @@ export const getVideos = async (req: Request, res: Response) => {
 export const deleteVideos = async (req: any, res: Response) => {
   try {
     const { id } = req.params
-    await Video.findByIdAndUpdate(id,{deleted:true,deletedBy:req.loggedUser._id})
+    await Video.findByIdAndUpdate(id,{deleted:true,deletedBy:req.loggedUser.name})
     res.status(200).json({ message: "Video deleted successfully" });
   } catch (error) {
     console.error("Error deleting media media:", error);

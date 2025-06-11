@@ -81,12 +81,12 @@ export class StudentControllers {
     const loggedUser = (req as any).loggedUser
 
     try {
-      const student = await Student.findByIdAndUpdate(id,{deleted:true,deletedBy:req.loggedUser._id});
+      const student = await Student.findByIdAndUpdate(id,{deleted:true,deletedBy:req.loggedUser.name});
 
       if (!student) {
         return res.status(404).json({ message: "Student not found" });
       }
-      await Payment.findOneAndUpdate({ studentId: student._id },{deleted:true,deletedBy:req.loggedUser._id});
+      await Payment.findOneAndUpdate({ studentId: student._id },{deleted:true,deletedBy:req.loggedUser.name});
       res.status(200).json({ message: "student deleted successfully" });
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} occured` });
@@ -117,6 +117,8 @@ static changeStatus = async (req: Request, res: Response) => {
       await Transaction.create({
         institution: loggedUser.institution,
         studentId: student._id,
+        method:paymentMethod,
+        receiver:loggedUser.name,
         amount: 10000,
         reason: "Registration fees",
       });
@@ -185,6 +187,7 @@ static changeStatus = async (req: Request, res: Response) => {
         institution: loggedUser.institution,
         studentId: registerStudent._id,
         amount: 10000,
+        receiver:loggedUser.name,
         method: student.payment,
         reason: "Registration fees",
       });
@@ -250,5 +253,16 @@ static changeStatus = async (req: Request, res: Response) => {
         .json({ message: `Internal server error ${error}` });
     }
   };
+  static addSticky =  async(req:Request, res:Response)=>{
+    try {
+    const {id} = req.params
+    const {sticky} = req.body
+    await Student.findByIdAndUpdate(id,{sticky})
+    res.status(200).json({message:"sticky added"})
+    } catch (error:any) {
+    res.status(500).json({message:"sticky not added",error:error.message})
+      
+    }
+  }
  
 }

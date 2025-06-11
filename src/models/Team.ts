@@ -23,7 +23,7 @@ const TeamSchema = new Schema<TeamTypes>({
   isAdmin: { type: Schema.Types.Boolean, default: false },
   isSuperAdmin: { type: Schema.Types.Boolean, default: false },
   deleted:{type:Boolean,required:true, default:false},
-  deletedBy:{type:mongoose.Types.ObjectId, ref:"Team"}
+  deletedBy:{type:String}
 
 });
 const Team = model<TeamTypes>("Team",TeamSchema)

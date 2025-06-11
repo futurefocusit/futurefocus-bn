@@ -10,6 +10,7 @@ export interface TaskTypes extends Document {
   manager: ObjectId;
   comments: [ObjectId];
   deleted:boolean
+  deletedBy:string
 }
 export interface ReplyTypes {
   institution: ObjectId;
@@ -17,7 +18,7 @@ export interface ReplyTypes {
   text: string;
   comment: ObjectId;
   deleted:boolean,
-   deletedBy:ObjectId
+   deletedBy:string
 }
 export interface CommentTypes {
   institution: ObjectId;
@@ -29,6 +30,7 @@ export interface CommentTypes {
 }
 export interface StudentTypes extends Document {
   institution: ObjectId;
+  sticky:string
   admitted:Date
   registered:Date
   name: string;
@@ -48,7 +50,8 @@ export interface StudentTypes extends Document {
   identity:string,
   nationality:string
   deleted:boolean
-  deletedBy:ObjectId
+  deletedBy:string
+
    nid:string
   
 }
@@ -71,7 +74,8 @@ export interface TeamTypes extends Document {
   otp: number | null;
   phone: string;
   deleted:boolean
-   deletedBy:ObjectId
+  deletedBy:string
+   
 }
 export interface ServiceTypes extends Document {
   institution: ObjectId;
@@ -79,7 +83,8 @@ export interface ServiceTypes extends Document {
   subservices: string[];
   icon: string;
   deleted:boolean
-   deletedBy:ObjectId
+   deletedBy:string
+
 }
 
 export interface CourseTypes extends Document {
@@ -93,7 +98,8 @@ export interface CourseTypes extends Document {
   nonScholarship: number;
   shifts: ObjectId[];
   deleted:boolean
-   deletedBy:ObjectId
+  deletedBy:string
+
 }
 export interface socialMedias {
   web: string,
@@ -114,7 +120,8 @@ export interface attendanceTypes {
   studentId: Schema.Types.ObjectId;
   status: string;
   deleted:boolean
-   deletedBy:ObjectId
+     deletedBy:string
+
 }
 export interface paymentTypes {
   institution: ObjectId;
@@ -126,7 +133,8 @@ export interface paymentTypes {
   extraAmount: number;
   comment: string;
   deleted:boolean
-   deletedBy:ObjectId
+   deletedBy:String
+   receiver:string
 }
 
 export interface transactionTypes {
@@ -135,8 +143,8 @@ export interface transactionTypes {
   amount: number;
   reason: string;
   deleted:boolean
-   deletedBy:ObjectId
-   receiver:ObjectId,
+  deletedBy:string
+   receiver:string,
    method:'momo'|'bank'|'cash'
 }
 export interface cashflowTypes {
@@ -147,22 +155,24 @@ export interface cashflowTypes {
   reason: string;
   payment: string;
   deleted:boolean
-   deletedBy:ObjectId
+  deletedBy:string
+
 }
 export interface RoleTypes {
   institution: ObjectId;
   role: string;
   permission: ObjectId[];
   deleted:boolean
+  deletedBy:string
 
-   deletedBy:ObjectId
 }
 export interface PermissionTypes {
   institution: ObjectId;
   feature: Types.ObjectId;
   permission: string;
   deleted:boolean
-   deletedBy:ObjectId
+  deletedBy:string
+
 }
 export interface InstitutionTypes {
   institution: ObjectId;
@@ -174,7 +184,8 @@ export interface InstitutionTypes {
   verified: boolean;
   website: string
   deleted:boolean
-   deletedBy:ObjectId
+  deletedBy:string
+ 
 }
 export interface AccessPaymentTypes {
   institution: ObjectId;
@@ -184,8 +195,8 @@ export interface AccessPaymentTypes {
     feature: ObjectId;
     duration: number;
   }[];
+  deletedBy:string
   deleted:boolean,
-   deletedBy:ObjectId
   status: "pending" | "completed" | "failed";
 }
 export interface Ifeature {
@@ -193,8 +204,8 @@ export interface Ifeature {
   active: boolean;
   lastUpdated?: Date;
   dueDate: number;
+  deletedBy:string
   deleted:boolean
-   deletedBy:ObjectId
 }
 export interface accesstypes {
   institution: ObjectId;
@@ -210,7 +221,8 @@ export interface accesstypes {
   deleted:boolean
   createdAt?: Date;
   updatedAt?: Date;
-  deletedBy:ObjectId
+  deletedBy:string
+ 
 }
 export interface IAPI {
   inst: ObjectId;
@@ -218,5 +230,6 @@ export interface IAPI {
   api_key: string;
   secret_key: string;
   deleted:boolean
-  deletedBy:ObjectId
+  deletedBy:string
+
 }

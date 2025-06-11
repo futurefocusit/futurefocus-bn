@@ -42,7 +42,7 @@ export class CourseController {
   static delete = async (req: any, res: Response) => {
     try {
       const courseId = req.params.id;
-    await Course.findByIdAndUpdate(courseId,{deleted:true,deletedBy:req.loggedUser._id});
+    await Course.findByIdAndUpdate(courseId,{deleted:true,deletedBy:req.loggedUser.name});
       res.status(200).json({ message: "course deleted" });
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} occured` });

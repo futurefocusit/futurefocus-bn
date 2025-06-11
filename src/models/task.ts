@@ -32,6 +32,7 @@ export const taskSchema = new Schema<TaskTypes>({
     type: Date,
   },
   deleted:{type:Boolean,default:false,required:true},
+  deletedBy:{type:String},
   comments: [
     {
       type: Schema.Types.ObjectId,
@@ -82,7 +83,7 @@ export const replySchema = new Schema<ReplyTypes>({
     ref: "Comment",
   },
   deleted:{type:Boolean,required:true, default:false},
-   deletedBy:{type:mongoose.Types.ObjectId, ref:"Team"}
+   deletedBy:{type:String}
 },{
   timestamps: true,
 });

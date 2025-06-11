@@ -25,7 +25,7 @@ const paymentSchema = new Schema<paymentTypes>(
     extraAmount: { type: Number, default: 0, required: true },
     comment: { type: String, required: false },
   deleted:{type:Boolean,required:true, default:false},
-   deletedBy:{type:mongoose.Types.ObjectId, ref:"Team"}
+   deletedBy:{type:String}
   },
   {
     timestamps: true,

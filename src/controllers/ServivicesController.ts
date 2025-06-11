@@ -44,7 +44,7 @@ export class ServiceController {
   static delete = async(req:any,res:Response)=>{
     try {
         const serviceId = req.params.id
-        await Service.findByIdAndUpdate(serviceId,{deleted:true,deletedBy:req.loggedUser._id})
+        await Service.findByIdAndUpdate(serviceId,{deleted:true,deletedBy:req.loggedUser.name})
        res.status(200).json({ message: "service deleted" });
 
     } catch (error:any) {

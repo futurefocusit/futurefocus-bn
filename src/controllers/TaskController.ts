@@ -110,7 +110,7 @@ export class taskController {
   static delete = async (req: any, res: Response) => {
     try {
       const { id } = req.params;
-      await Task.findByIdAndUpdate(id,{deleted:true,deletedBy:req.loggedUser._id});
+      await Task.findByIdAndUpdate(id,{deleted:true,deletedBy:req.loggedUser.name});
       // const comments = await Comment.find({ task: id });
       // await Promise.all(
       //   comments.map(async (comment) => {

@@ -10,7 +10,7 @@ const InstitutionSchema = new Schema<InstitutionTypes>({
   verified:{type:Boolean,required:true, default:false},
   website:{type:String},
   deleted:{type:Boolean,required:true, default:false},
-   deletedBy:{type:mongoose.Types.ObjectId, ref:"Team"}
+   deletedBy:{type:String}
 
 },{timestamps:true});
 export const Institution = model<InstitutionTypes>("Institution",InstitutionSchema)

@@ -16,7 +16,7 @@ const AttendanceSchema = new Schema<attendanceTypes>(
       default: "absent",
     },
  deleted:{type:Boolean,required:true, default:false},
-deletedBy:{type:mongoose.Types.ObjectId, ref:"Team"}
+deletedBy:{type:String}
 
   },
 
