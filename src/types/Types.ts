@@ -178,6 +178,16 @@ export interface InstitutionTypes {
   institution: ObjectId;
   isSuperInst: boolean
   name: string;
+  slug: string;
+  mission: string;
+  vision: string;
+  description:string
+  aboutUs:string
+  whyChooseUs:string[]
+ linkedin:string,
+  instagram:string,
+  tiktok:string,
+  facebook:string,
   logo: string;
   email: string;
   phone: number;
@@ -185,6 +195,8 @@ export interface InstitutionTypes {
   website: string
   deleted:boolean
   deletedBy:string
+  location:string
+  
  
 }
 export interface AccessPaymentTypes {

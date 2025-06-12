@@ -34,7 +34,7 @@ export class InstitutionControllers {
             }
 
             // Create institution
-            const newInst = await Institution.create([{ name, email, phone, logo: logo.url }]);
+            const newInst = await Institution.create([{ name, email, phone, logo: logo.url,slug:name.replace(/\s+/g, "").toLowerCase() }]);
             const institution = newInst[0];
 
             // Get permissions and create role
@@ -95,6 +95,98 @@ export class InstitutionControllers {
             session.endSession(); 
         }
     };
+
+    static getCompany = async(req:any, res:Response)=>{
+        try {
+          const companyData = await Institution.findById(req.loggedUser.institution)  
+          res.status(200).json(companyData)
+        } catch (error:any) {
+          res.status(500).json({message:"failed to get institution data", error: error.message})
+        
+        }
+    }
+    static getCompanyByName = async(req:any, res:Response)=>{
+        try {
+          const companyData = await Institution.findOne({slug:req.params.name})  
+          res.status(200).json(companyData)
+        } catch (error:any) {
+          res.status(500).json({message:"failed to get institution data", error: error.message})
+        
+        }
+    }
+    
+    static  updateCompany = async(req:any, res:Response)=> {
+    try {
+      const  id  = req.loggedUser.institution
+      const updateData = req.body
+
+      // Validate ObjectId
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid company ID format",
+        })
+      }
+
+      // Remove _id from update data if present (prevent ID modification)
+      delete updateData._id
+
+      // Check if company exists and is not deleted
+      const existingCompany = await Institution.findOne({ _id: id, deleted: false })
+      if (!existingCompany) {
+        return res.status(404).json({
+          success: false,
+          message: "Company not found",
+        })
+      }
+
+      // If email is being updated, check for duplicates
+      if (updateData.email && updateData.email !== existingCompany.email) {
+        const emailExists = await Institution.findOne({
+          email: updateData.email,
+          deleted: false,
+          _id: { $ne: id },
+        })
+
+        if (emailExists) {
+          return res.status(409).json({
+            success: false,
+            message: "Company with this email already exists",
+          })
+        }
+      }
+
+      // Update the company
+      const updatedCompany = await Institution.findByIdAndUpdate(id, updateData, {
+        new: true, // Return updated document
+        runValidators: true, // Run schema validators
+      }).select("-__v")
+
+      res.status(200).json({
+        success: true,
+        message: "Company updated successfully",
+        data: updatedCompany,
+      })
+    } catch (error:any) {
+      console.error("Error updating company:", error)
+
+      // Handle validation errors
+      if (error.name === "ValidationError") {
+        const errors = Object.values(error.errors).map((err:any) => err.message)
+        return res.status(400).json({
+          success: false,
+          message: "Validation failed",
+          errors,
+        })
+      }
+
+      res.status(500).json({
+        success: false,
+        message: "Error updating company",
+        error: error.message,
+      })
+    }
+  }
 
     static all = async (req: Request, res: Response) => {
         try {

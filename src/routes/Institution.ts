@@ -12,4 +12,7 @@ InstitutionRouter.post('/' ,
 InstitutionRouter.put('/activate-all-features',isloggedIn, InstitutionControllers.activateAllFeatures)
 InstitutionRouter.put('/activate-some-features', isloggedIn,InstitutionControllers.activateSomeFeatures)
 InstitutionRouter.put('/feature',isloggedIn,InstitutionControllers.addfeature)
+InstitutionRouter.put('/profile/',isloggedIn,InstitutionControllers.updateCompany)
+InstitutionRouter.get('/profile/',isloggedIn,InstitutionControllers.getCompany)
+InstitutionRouter.get('/profile/:name',InstitutionControllers.getCompanyByName)
 InstitutionRouter.put('/verify',isloggedIn,InstitutionControllers.verify)
