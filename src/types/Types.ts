@@ -190,7 +190,7 @@ export interface InstitutionTypes {
   facebook:string,
   logo: string;
   email: string;
-  phone: number;
+  phone: string;
   verified: boolean;
   website: string
   deleted:boolean
