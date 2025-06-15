@@ -76,6 +76,21 @@ export interface TeamTypes extends Document {
   deleted: boolean
   deletedBy: string
 
+  // Added Details
+  contractType: String,
+  linkedIn: string,
+  nationalId: string,
+  leaveDetails:{
+    isOnLeave: boolean,
+    leaveType?: string ,
+    startDate?: string,
+    endDate?: string,
+    approvedBy?: ObjectId,
+  },
+  bio: string,
+  skills: string[],
+  createdBy: ObjectId,
+
 }
 export interface ServiceTypes extends Document {
   institution: ObjectId;
