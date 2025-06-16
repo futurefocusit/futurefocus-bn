@@ -70,7 +70,7 @@ export interface TeamTypes extends Document {
   password: string;
   isAdmin: boolean;
   isSuperAdmin: boolean;
-  role: ObjectId;
+  role: ObjectId; 
   otp: number | null;
   phone: string;
   deleted: boolean
@@ -175,8 +175,6 @@ export interface PermissionTypes {
 
 }
 export interface InstitutionTypes {
-  closing: string
-  opening: string
   institution: ObjectId;
   isSuperInst: boolean
   name: string;
@@ -190,14 +188,15 @@ export interface InstitutionTypes {
   address:string
   coreValues:string[]
   languages:string[]
-  gallery:string[]
+  gallery:{url:string, caption:string}[]
   linkedin: string,
   instagram: string,
   tiktok: string,
   facebook: string,
   logo: string;
   email: string;
-  phone: [{ type: string, phone: string }]
+  phone: { type: string, phone: string }[],
+  days:{opening:{type:string},closing:{type:string}}[]
   verified: boolean;
   website: string
   deleted: boolean
