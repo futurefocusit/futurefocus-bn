@@ -15,14 +15,49 @@ export class TeamControllers {
   static AddMember = async (req: any, res: Response) => {
     try {
       const loggedUser = req.loggedUser
+      const {
+      name,
+      image,
+      email,
+      position,
+      phone,
+      instagram,
+      salary,
+      dateJoined,
+      contractSummary,
+      contractType,
+      linkedIn,
+      nationalId,
+      bio,
+      skills,
+      leaveDetails
+    } = req.body;
 
-      const { name, title, image, email, position, instagram,salary, dateJoined,contractSummary } = req.body;
+
       const isExist = await Team.findOne({ email: email });
       if (isExist) {
         return res.status(400).json({ message: "member already exist" });
       }
       const password = await hashingPassword('00000000')
-      await Team.create({ name, title, image, salary, dateJoined,contractSummary, email, position, instagram, password, institution: loggedUser.institution });
+      await Team.create({
+      name,
+      image,
+      email,
+      position,
+      phone,
+      instagram,
+      salary,
+      dateJoined,
+      contractSummary,
+      contractType,
+      linkedIn,
+      nationalId,
+      bio,
+      skills,
+      leaveDetails,
+      password,
+      institution: loggedUser.institution
+    });
        res.status(200).json({ messsage: "member added" });
        const mailOptions:Options = {
          from: `"${process.env.SMTP_FROM_NAME}" <${process.env.SMTP_FROM_EMAIL}>`,

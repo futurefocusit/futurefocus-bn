@@ -85,12 +85,9 @@ export interface TeamTypes extends Document {
     leaveType?: string ,
     startDate?: string,
     endDate?: string,
-    approvedBy?: ObjectId,
   },
   bio: string,
   skills: string[],
-  createdBy: ObjectId,
-
 }
 export interface ServiceTypes extends Document {
   institution: ObjectId;

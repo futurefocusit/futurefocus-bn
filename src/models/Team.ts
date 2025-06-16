@@ -26,7 +26,7 @@ const TeamSchema = new Schema<TeamTypes>({
   deletedBy:{type:String},
 
   // Added Details
-  contractType:{type: String, required:true},
+  contractType:{type: String, required:true}, 
   linkedIn:{type:String, required:true},
   nationalId:{type: String, required: true},
   leaveDetails:{
@@ -34,15 +34,12 @@ const TeamSchema = new Schema<TeamTypes>({
     leaveType:{type: String},
     startDate:{type: String},
     endDate:{type: String},
-    approvedBy:{type: Schema.Types.ObjectId, ref: "Team"}
   },
   bio:{type: String, required: true},
   skills:{type:[String], required: true, default:[]},
-  createdBy:{type: Schema.Types.ObjectId, ref:"Admin"}
   
 });
 const Team = model<TeamTypes>("Team",TeamSchema)
-
 
 const TeamAttendanceSchema = new Schema({
   institution: {
