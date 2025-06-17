@@ -27,7 +27,7 @@ const TeamSchema = new Schema<TeamTypes>({
 
   // Added Details
   contractType:{type: String, required:true}, 
-  linkedIn:{type:String, required:true},
+  linkedIn:{type:String},
   nationalId:{type: String, required: true},
   leaveDetails:{
     isOnLeave:{type:Boolean, required: true, default: false},
@@ -35,7 +35,7 @@ const TeamSchema = new Schema<TeamTypes>({
     startDate:{type: String},
     endDate:{type: String},
   },
-  bio:{type: String, required: true},
+  bio:{type: String, required: true, default:''},
   skills:{type:[String], required: true, default:[]},
   
 });
