@@ -23,11 +23,23 @@ const TeamSchema = new Schema<TeamTypes>({
   isAdmin: { type: Schema.Types.Boolean, default: false },
   isSuperAdmin: { type: Schema.Types.Boolean, default: false },
   deleted:{type:Boolean,required:true, default:false},
-  deletedBy:{type:String}
+  deletedBy:{type:String},
 
+  // Added Details
+  contractType:{type: String, required:true}, 
+  linkedIn:{type:String},
+  nationalId:{type: String, required: true},
+  leaveDetails:{
+    isOnLeave:{type:Boolean, required: true, default: false},
+    leaveType:{type: String},
+    startDate:{type: String},
+    endDate:{type: String},
+  },
+  bio:{type: String, required: true, default:''},
+  skills:{type:[String], required: true, default:[]},
+  
 });
 const Team = model<TeamTypes>("Team",TeamSchema)
-
 
 const TeamAttendanceSchema = new Schema({
   institution: {
