@@ -196,7 +196,7 @@ export interface InstitutionTypes {
   logo: string;
   email: string;
   phone: { type: string, phone: string }[],
-  days:{opening:{type:string},closing:{type:string}}[]
+  days:{opening:{type:string},closing:{type:string},day:{type:string}}[]
   verified: boolean;
   website: string
   deleted: boolean

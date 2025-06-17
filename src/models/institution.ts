@@ -11,7 +11,7 @@ const InstitutionSchema = new Schema<InstitutionTypes>({
   mission:{type:String},
   vision:{type:String},
   slug:{type:String},
-  days:[{opening:{type:String},closing:{type:String}}],
+  days:[{day:{type:String},opening:{type:String},closing:{type:String}}],
   whyChooseUs:{type:[String], default:[]},
   linkedin:{type:String},
   instagram:{type:String},

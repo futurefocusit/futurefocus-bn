@@ -14,10 +14,11 @@ import { inventoryRouter } from "./inventoryRoutes";
 import { InstitutionRouter } from "./Institution";
 import { isloggedIn } from "../middleware/isLoggedIn";
 import subscriptionRouter from "./subscriptionRouter";
-import uploadSingle from "rod-fileupload";
-import cloudinary from "../config/multer";
+
 import UploadRouter from "./upload";
 import { DeletedRoute } from "./recycleBinRoutes";
+import  BlogsRoute  from "./blogs.router";
+
 
 export const indexRouter = Router()
 indexRouter.use('/upload', isloggedIn, UploadRouter)
@@ -35,5 +36,6 @@ indexRouter.use("/inventory", isloggedIn, inventoryRouter);
 indexRouter.use("/institution", InstitutionRouter);
 indexRouter.use("/subscription", isloggedIn, subscriptionRouter);
 indexRouter.use("/deleted", DeletedRoute);
+indexRouter.use("/blogs", BlogsRoute);
 
   
