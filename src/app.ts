@@ -41,9 +41,10 @@ app.use("/api/v1", indexRouter);
 
 app.listen(PORT, async () => {
   await connection();
-// startBackup() 
+startBackup
+git () 
 
-  console.log(`App is listening at http://localhost:${PORT}`);
+  console.log(`App is listening at http://localhost:${PORT}`); 
 });
 
 process.on('SIGTERM', () => {

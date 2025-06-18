@@ -126,6 +126,7 @@ export const createBlog = asyncHandler(async (req: any, res: Response) => {
   session.startTransaction()
 req.body.author = req.loggedUser._id
 req.body.institution = req.loggedUser.institution
+req.body.published =true
   try {
     const blog = await Blog.create([req.body])
 
