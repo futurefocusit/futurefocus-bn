@@ -18,6 +18,7 @@ StudentRoutes.get("/",
     // (req,res,next)=>hasAcces(req,res,next,'student'),
     StudentControllers.students)
 StudentRoutes.delete('/:id',isloggedIn,StudentControllers.delete)
+StudentRoutes.post('/delete',isloggedIn,StudentControllers.deleteMany)
 StudentRoutes.put('/:id',isloggedIn, StudentControllers.changeStatus)
 StudentRoutes.put('/sticky/:id',isloggedIn, StudentControllers.addSticky)
 StudentRoutes.post('/register', isloggedIn,StudentControllers.registerNew)

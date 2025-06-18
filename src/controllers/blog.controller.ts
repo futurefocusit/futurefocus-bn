@@ -1,523 +1,350 @@
-import { Request, Response } from 'express';
-import Blog, { IBlog } from '../models/Blog';
-import { validateObjectId } from '../utils/validation';
-
-// Helper function to generate slug
-const generateSlug = (title: string): string => {
-    return title
-        .toLowerCase()
-        .replace(/[^a-z0-9 -]/g, '')
-        .replace(/\s+/g, '-')
-        .replace(/-+/g, '-')
-        .trim();
-};
-
-// Helper function to generate unique slug
-const generateUniqueSlug = async (title: string): Promise<string> => {
-    let slug = generateSlug(title);
-    let counter = 1;
-    let uniqueSlug = slug;
-
-    while (await Blog.findOne({ slug: uniqueSlug })) {
-        uniqueSlug = `${slug}-${counter}`;
-        counter++;
-    }
-
-    return uniqueSlug;
-};
-
-// @desc    Create a new blog post
-// @route   POST /api/blogs
-// @access  Private (Admin/Institution)
-export const createBlog = async (req: any, res: Response) => {
-    try {
-        const institutionId = req.user?.institution
-        const {
-            title,
-            content,
-            excerpt,
-            author,
-            featuredImage,
-            tags,
-            category,
-            status,
-            seoTitle,
-            seoDescription,
-            seoKeywords,
-            isFeatured
-        } = req.body;
-
-        // Validate required fields
-        if (!title || !content || !excerpt || !author || !category) {
-            return res.status(400).json({
-                success: false,
-                message: 'Missing required fields: title, content, excerpt, author, institutionId, category'
-            });
-        }
-
-        // Validate institutionId
-        if (!validateObjectId(institutionId)) {
-            return res.status(400).json({
-                success: false,
-                message: 'Invalid institution ID'
-            });
-        }
-
-        // Generate unique slug
-        const slug = await generateUniqueSlug(title);
-
-        // Create blog post
-        const blog = new Blog({
-            title,
-            content,
-            excerpt,
-            author,
-            institutionId,
-            slug,
-            featuredImage,
-            tags: tags || [],
-            category,
-            status: status || 'draft',
-            seoTitle,
-            seoDescription,
-            seoKeywords: seoKeywords || [],
-            isFeatured: isFeatured || false
-        });
-
-        await blog.save();
-
-        res.status(201).json({
-            success: true,
-            message: 'Blog post created successfully',
-            data: blog
-        });
-    } catch (error: any) {
-        console.error('Error creating blog:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Error creating blog post',
-            error: error.message
-        });
-    }
-};
-
-// @desc    Get all blogs with pagination and filtering
+import type { Request, Response } from "express"
+import mongoose from "mongoose"
+import { asyncHandler } from "../utils/error.handler"
+import Blog from "../models/blog.model"
+import { Institution } from "../models/institution"
+// @desc    Get all blogs
 // @route   GET /api/blogs
 // @access  Public
-export const getBlogs = async (req: Request, res: Response) => {
-    try {
-        const {
-            page = 1,
-            limit = 10,
-            category,
-            status = 'published',
-            institutionId,
-            search,
-            sortBy = 'publishedAt',
-            sortOrder = 'desc',
-            featured
-        } = req.query;
 
-        const pageNum = parseInt(page as string);
-        const limitNum = parseInt(limit as string);
-        const skip = (pageNum - 1) * limitNum;
 
-        const query: any = {};
 
-        if (status) {
-            query.status = status;
-        }
+export const getBlogs = asyncHandler(async (req: any, res: Response) => {
+  const page = Number.parseInt(req.query.page as string) || 1
+  const limit = Number.parseInt(req.query.limit as string) || 10
+  const startIndex = (page - 1) * limit
+  const endIndex = page * limit
+  const {slug}=req.params
+  const inst = await Institution.findOne({slug})
 
-        if (category) {
-            query.category = category;
-        }
+  const total = await Blog.countDocuments({ published: true, })
 
-        if (institutionId) {
-            if (!validateObjectId(institutionId as string)) {
-                return res.status(400).json({
-                    success: false,
-                    message: 'Invalid institution ID'
-                });
-            }
-            query.institutionId = institutionId;
-        }
+  // Only show published blogs for public access
+  const query = { published: true}
+  const blogs = await Blog.find(query).populate("author", "name").sort({ createdAt: -1 }).skip(startIndex).limit(limit)
 
-        if (featured === 'true') {
-            query.isFeatured = true;
-        }
+  const pagination: any = {}
 
-        // Text search
-        if (search) {
-            query.$text = { $search: search as string };
-        }
-
-        // Build sort object
-        const sort: any = {};
-        sort[sortBy as string] = sortOrder === 'desc' ? -1 : 1;
-
-        // Execute query
-        const blogs = await Blog.find(query)
-            .sort(sort)
-            .skip(skip)
-            .limit(limitNum)
-            .populate('institutionId', 'name slug logo')
-            .lean();
-
-        // Get total count
-        const total = await Blog.countDocuments(query);
-
-        res.json({
-            success: true,
-            data: blogs,
-            pagination: {
-                page: pageNum,
-                limit: limitNum,
-                total,
-                pages: Math.ceil(total / limitNum)
-            }
-        });
-    } catch (error: any) {
-        console.error('Error fetching blogs:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Error fetching blogs',
-            error: error.message
-        });
+  if (endIndex < total) {
+    pagination.next = {
+      page: page + 1,
+      limit,
     }
-};
+  }
 
-// @desc    Get blog by slug
-// @route   GET /api/blogs/:slug
+  if (startIndex > 0) {
+    pagination.prev = {
+      page: page - 1,
+      limit,
+    }
+  }
+
+  res.status(200).json({
+    success: true,
+    count: blogs.length,
+    pagination,
+    data: blogs,
+  })
+})
+export const getBlogsBySlug = asyncHandler(async (req: any, res: Response) => {
+  const page = Number.parseInt(req.query.page as string) || 1
+  const limit = Number.parseInt(req.query.limit as string) || 10
+  const startIndex = (page - 1) * limit
+  const endIndex = page * limit
+  const {slug}=req.params
+  const inst = await Institution.findOne({slug})
+  if(!inst){
+    res.status(400).json({message:"inst not found"})
+    return
+  }
+  const total = await Blog.countDocuments({ published: true, institution:inst._id })
+
+  // Only show published blogs for public access
+  const query = { published: true,institution:inst._id}
+
+  const blogs = await Blog.find(query).populate("author", "name").sort({ createdAt: -1 }).skip(startIndex).limit(limit)
+
+  const pagination: any = {}
+
+  if (endIndex < total) {
+    pagination.next = {
+      page: page + 1,
+      limit,
+    }
+  }
+
+  if (startIndex > 0) {
+    pagination.prev = {
+      page: page - 1,
+      limit,
+    }
+  }
+
+  res.status(200).json({
+    success: true,
+    count: blogs.length,
+    pagination,
+    data: blogs,
+  })
+})
+
+// @desc    Get single blog
+// @route   GET /api/blogs/:id
 // @access  Public
-export const getBlogBySlug = async (req: Request, res: Response) => {
-    try {
-        const { slug } = req.params;
+export const getBlog = asyncHandler(async (req: any, res: Response) => {
+  const blog = await Blog.findOne({
+    $or: [{ _id: req.params.id }, { slug: req.params.id }],
+  }).populate("author", "name")
 
-        const blog = await Blog.findOne({ slug, status: 'published' })
-            .populate('institutionId', 'name slug logo location')
-            .lean();
+  if (!blog) {
+    return res.status(404).json({
+      success: false,
+      error: "Blog not found",
+    })
+  }
 
-        if (!blog) {
-            return res.status(404).json({
-                success: false,
-                message: 'Blog post not found'
-            });
-        }
+  // Check if blog is published or user is admin
+  if (!blog.published && (!req.user || req.user.role !== "admin")) {
+    return res.status(404).json({
+      success: false,
+      error: "Blog not found",
+    })
+  }
 
-        // Increment views
-        await Blog.findByIdAndUpdate(blog._id, { $inc: { views: 1 } });
+  res.status(200).json({
+    success: true,
+    data: blog,
+  })
+})
 
-        res.json({
-            success: true,
-            data: blog
-        });
-    } catch (error: any) {
-        console.error('Error fetching blog:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Error fetching blog post',
-            error: error.message
-        });
-    }
-};
+// @desc    Create new blog
+// @route   POST /api/blogs
+// @access  Private (Admin)
+export const createBlog = asyncHandler(async (req: any, res: Response) => {
+ 
+  const session = await mongoose.startSession()
+  session.startTransaction()
+req.body.author = req.loggedUser._id
+  try {
+    const blog = await Blog.create([req.body])
 
-// @desc    Get blog by ID (for admin/institution)
-// @route   GET /api/blogs/id/:id
-// @access  Private
-export const getBlogById = async (req: Request, res: Response) => {
-    try {
-        const { id } = req.params;
+    await session.commitTransaction()
+    session.endSession()
 
-        if (!validateObjectId(id)) {
-            return res.status(400).json({
-                success: false,
-                message: 'Invalid blog ID'
-            });
-        }
+    res.status(201).json({
+      success: true,
+      data: blog[0],
+    })
+  } catch (error) {
+    await session.abortTransaction()
+    session.endSession()
+    throw error
+  }
+})
 
-        const blog = await Blog.findById(id)
-            .populate('institutionId', 'name slug logo location')
-            .lean();
-
-        if (!blog) {
-            return res.status(404).json({
-                success: false,
-                message: 'Blog post not found'
-            });
-        }
-
-        res.json({
-            success: true,
-            data: blog
-        });
-    } catch (error: any) {
-        console.error('Error fetching blog:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Error fetching blog post',
-            error: error.message
-        });
-    }
-};
-
-// @desc    Update blog post
+// @desc    Update blog
 // @route   PUT /api/blogs/:id
-// @access  Private
-export const updateBlog = async (req: Request, res: Response) => {
-    try {
-        const { id } = req.params;
-        const updateData = req.body;
+// @access  Private (Admin)
+export const updateBlog = asyncHandler(async (req: Request, res: Response) => {
+  let blog = await Blog.findById(req.params.id)
 
-        if (!validateObjectId(id)) {
-            return res.status(400).json({
-                success: false,
-                message: 'Invalid blog ID'
-            });
-        }
+  if (!blog) {
+    return res.status(404).json({
+      success: false,
+      error: "Blog not found",
+    })
+  }
 
-        // If title is being updated, generate new slug
-        if (updateData.title) {
-            updateData.slug = await generateUniqueSlug(updateData.title);
-        }
+  const session = await mongoose.startSession()
+  session.startTransaction()
 
-        const blog = await Blog.findByIdAndUpdate(
-            id,
-            updateData,
-            { new: true, runValidators: true }
-        ).populate('institutionId', 'name slug logo location');
+  try {
+    blog = await Blog.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    })
 
-        if (!blog) {
-            return res.status(404).json({
-                success: false,
-                message: 'Blog post not found'
-            });
-        }
+    await session.commitTransaction()
+    session.endSession()
 
-        res.json({
-            success: true,
-            message: 'Blog post updated successfully',
-            data: blog
-        });
-    } catch (error: any) {
-        console.error('Error updating blog:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Error updating blog post',
-            error: error.message
-        });
-    }
-};
+    res.status(200).json({
+      success: true,
+      data: blog,
+    })
+  } catch (error) {
+    await session.abortTransaction()
+    session.endSession()
+    throw error
+  }
+})
 
-// @desc    Delete blog post
+// @desc    Delete blog
 // @route   DELETE /api/blogs/:id
-// @access  Private
-export const deleteBlog = async (req: Request, res: Response) => {
-    try {
-        const { id } = req.params;
+// @access  Private (Admin)
+export const deleteBlog = asyncHandler(async (req: Request, res: Response) => {
+  const blog = await Blog.findById(req.params.id)
 
-        if (!validateObjectId(id)) {
-            return res.status(400).json({
-                success: false,
-                message: 'Invalid blog ID'
-            });
-        }
+  if (!blog) {
+    return res.status(404).json({
+      success: false,
+      error: "Blog not found",
+    })
+  }
 
-        const blog = await Blog.findByIdAndDelete(id);
+  const session = await mongoose.startSession()
+  session.startTransaction()
 
-        if (!blog) {
-            return res.status(404).json({
-                success: false,
-                message: 'Blog post not found'
-            });
-        }
-
-        res.json({
-            success: true,
-            message: 'Blog post deleted successfully'
-        });
-    } catch (error: any) {
-        console.error('Error deleting blog:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Error deleting blog post',
-            error: error.message
-        });
+  try {
+    // Delete image from cloudinary if it exists
+    if (blog.image && blog.image.includes("cloudinary")) {
+      const publicId = blog.image.split("/").pop()?.split(".")[0]
+      if (publicId) {
+        // await deleteFile(`portfolio/${publicId}`)
+      }
     }
-};
 
-// @desc    Like/Unlike blog post
-// @route   POST /api/blogs/:id/like
-// @access  Public
-export const toggleLike = async (req: Request, res: Response) => {
-    try {
-        const { id } = req.params;
-        const { action } = req.body; // 'like' or 'unlike'
-
-        if (!validateObjectId(id)) {
-            return res.status(400).json({
-                success: false,
-                message: 'Invalid blog ID'
-            });
+    // Delete gallery images if they exist
+    if (blog.gallery && blog.gallery.length > 0) {
+      for (const item of blog.gallery) {
+        if (item.url && item.url.includes("cloudinary")) {
+          const publicId = item.url.split("/").pop()?.split(".")[0]
+          if (publicId) {
+            // await deleteFile(`portfolio/${publicId}`)
+          }
         }
-
-        const blog = await Blog.findById(id);
-
-        if (!blog) {
-            return res.status(404).json({
-                success: false,
-                message: 'Blog post not found'
-            });
-        }
-
-        if (action === 'like') {
-
-        //@ts-expect-error erro
-            await blog.incrementLikes();
-        } else if (action === 'unlike') {
-        //@ts-expect-error erro
-            await blog.decrementLikes();
-        } else {
-            return res.status(400).json({
-                success: false,
-                message: 'Invalid action. Use "like" or "unlike"'
-            });
-        }
-
-        res.json({
-            success: true,
-            message: `Blog ${action}d successfully`,
-            data: { likes: blog.likes }
-        });
-    } catch (error: any) {
-        console.error('Error toggling like:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Error toggling like',
-            error: error.message
-        });
+      }
     }
-};
 
-// @desc    Get blog analytics
-// @route   GET /api/blogs/analytics
-// @access  Private
-export const getBlogAnalytics = async (req: Request, res: Response) => {
-    try {
-        const { institutionId } = req.query;
+    await blog.deleteOne({ session })
 
-        if (!institutionId || !validateObjectId(institutionId as string)) {
-            return res.status(400).json({
-                success: false,
-                message: 'Valid institution ID is required'
-            });
-        }
+    await session.commitTransaction()
+    session.endSession()
 
-        const analytics = await Blog.aggregate([
-            { $match: { institutionId: institutionId } },
-            {
-                $group: {
-                    _id: null,
-                    totalBlogs: { $sum: 1 },
-                    totalViews: { $sum: '$views' },
-                    totalLikes: { $sum: '$likes' },
-                    publishedBlogs: {
-                        $sum: { $cond: [{ $eq: ['$status', 'published'] }, 1, 0] }
-                    },
-                    draftBlogs: {
-                        $sum: { $cond: [{ $eq: ['$status', 'draft'] }, 1, 0] }
-                    },
-                    featuredBlogs: {
-                        $sum: { $cond: ['$isFeatured', 1, 0] }
-                    },
-                    avgReadTime: { $avg: '$readTime' }
-                }
-            }
-        ]);
+    res.status(200).json({
+      success: true,
+      data: {},
+    })
+  } catch (error) {
+    await session.abortTransaction()
+    session.endSession()
+    throw error
+  }
+})
 
-        // Get top performing blogs
-        const topBlogs = await Blog.find({ institutionId, status: 'published' })
-            .sort({ views: -1 })
-            .limit(5)
-            .select('title views likes publishedAt')
-            .lean();
+// @desc    Upload blog image
+// @route   POST /api/blogs/:id/image
+// @access  Private (Admin)
+export const uploadBlogImage = asyncHandler(async (req: any, res: Response) => {
+  const blog = await Blog.findById(req.params.id)
 
-        res.json({
-            success: true,
-            data: {
-                overview: analytics[0] || {
-                    totalBlogs: 0,
-                    totalViews: 0,
-                    totalLikes: 0,
-                    publishedBlogs: 0,
-                    draftBlogs: 0,
-                    featuredBlogs: 0,
-                    avgReadTime: 0
-                },
-                topBlogs
-            }
-        });
-    } catch (error: any) {
-        console.error('Error fetching analytics:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Error fetching blog analytics',
-            error: error.message
-        });
+  if (!blog) {
+    return res.status(404).json({
+      success: false,
+      error: "Blog not found",
+    })
+  }
+
+  if (!req.file) {
+    return res.status(400).json({
+      success: false,
+      error: "Please upload a file",
+    })
+  }
+
+  // Update blog with new image
+  blog.image = req.file.path
+  await blog.save()
+
+  res.status(200).json({
+    success: true,
+    data: blog,
+  })
+})
+
+// @desc    Add gallery item
+// @route   POST /api/blogs/:id/gallery
+// @access  Private (Admin)
+export const addGalleryItem = asyncHandler(async (req: any, res: Response) => {
+  const { type, caption } = req.body
+  const blog = await Blog.findById(req.params.id)
+
+  if (!blog) {
+    return res.status(404).json({
+      success: false,
+      error: "Blog not found",
+    })
+  }
+
+  if (!req.file) {
+    return res.status(400).json({
+      success: false,
+      error: "Please upload a file",
+    })
+  }
+
+  if (!type || !caption) {
+    return res.status(400).json({
+      success: false,
+      error: "Please provide type and caption",
+    })
+  }
+
+  // Add gallery item
+  blog.gallery = blog.gallery || []
+  blog.gallery.push({
+    type,
+    url: req.file.path,
+    caption,
+  })
+
+  await blog.save()
+
+  res.status(200).json({
+    success: true,
+    data: blog,
+  })
+})
+
+// @desc    Remove gallery item
+// @route   DELETE /api/blogs/:id/gallery/:itemId
+// @access  Private (Admin)
+export const removeGalleryItem = asyncHandler(async (req: Request, res: Response) => {
+  const blog = await Blog.findById(req.params.id)
+
+  if (!blog) {
+    return res.status(404).json({
+      success: false,
+      error: "Blog not found",
+    })
+  }
+
+  // Find gallery item
+    //@ts-expect-error error
+  const galleryItem = blog.gallery?.find((item) => item._id?.toString() === req.params.itemId)
+
+  if (!galleryItem) {
+    return res.status(404).json({
+      success: false,
+      error: "Gallery item not found",
+    })
+  }
+
+  // Delete from cloudinary if it exists
+  if (galleryItem.url && galleryItem.url.includes("cloudinary")) {
+    const publicId = galleryItem.url.split("/").pop()?.split(".")[0]
+    if (publicId) {
+      // await deleteFile(`portfolio/${publicId}`)
     }
-};
+  }
 
-// @desc    Search blogs
-// @route   GET /api/blogs/search
-// @access  Public
-export const searchBlogs = async (req: Request, res: Response) => {
-    try {
-        const { q, page = 1, limit = 10 } = req.query;
+  // Remove gallery item
+    //@ts-expect-error error
+  blog.gallery = blog.gallery?.filter((item) => item._id?.toString() !== req.params.itemId)
 
-        if (!q) {
-            return res.status(400).json({
-                success: false,
-                message: 'Search query is required'
-            });
-        }
+  await blog.save()
 
-        const pageNum = parseInt(page as string);
-        const limitNum = parseInt(limit as string);
-        const skip = (pageNum - 1) * limitNum;
-
-        const blogs = await Blog.find(
-            {
-                $text: { $search: q as string },
-                status: 'published'
-            },
-            { score: { $meta: 'textScore' } }
-        )
-            .sort({ score: { $meta: 'textScore' } })
-            .skip(skip)
-            .limit(limitNum)
-            .populate('institutionId', 'name slug logo')
-            .lean();
-
-        const total = await Blog.countDocuments({
-            $text: { $search: q as string },
-            status: 'published'
-        });
-
-        res.json({
-            success: true,
-            data: blogs,
-            pagination: {
-                page: pageNum,
-                limit: limitNum,
-                total,
-                pages: Math.ceil(total / limitNum)
-            }
-        });
-    } catch (error: any) {
-        console.error('Error searching blogs:', error);
-        res.status(500).json({
-            success: false,
-            message: 'Error searching blogs',
-            error: error.message
-        });
-    }
-}; 
+  res.status(200).json({
+    success: true,
+    data: blog,
+  })
+})

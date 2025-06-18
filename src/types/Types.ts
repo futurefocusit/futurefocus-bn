@@ -186,6 +186,29 @@ export interface PermissionTypes {
   deletedBy: string
 
 }
+
+
+export interface Blog {
+  institution:ObjectId
+  _id?: string
+  title: string
+  slug: string
+  excerpt: string
+  content: string
+  author: string | TeamTypes
+  tags: string[]
+  image: string
+  gallery?: {
+    type: "image" | "video"
+    url: string
+    caption: string
+  }[]
+  published: boolean
+  publishedAt?: Date
+  createdAt?: Date
+  updatedAt?: Date
+}
+
 export interface InstitutionTypes {
   institution: ObjectId;
   isSuperInst: boolean

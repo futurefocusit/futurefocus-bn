@@ -1,18 +1,32 @@
-import { Router } from "express";
-import { createBlog, deleteBlog, getBlogById, getBlogBySlug, getBlogs, updateBlog } from "../controllers/blog.controller";
+import express from "express"
+import {
+  getBlogs,
+  getBlog,
+  createBlog,
+  updateBlog, 
+  deleteBlog,
+  uploadBlogImage,
+  addGalleryItem,
+  removeGalleryItem,
+  getBlogsBySlug,
+} from "../controllers/blog.controller"
 import { isloggedIn } from "../middleware/isLoggedIn"
-const blogRoute = Router()
-
-blogRoute.post("/",isloggedIn, createBlog)
-blogRoute.get("/", getBlogs)
-blogRoute.get("/",isloggedIn, getBlogs)
-blogRoute.get("/:slug", getBlogBySlug)
-blogRoute.get("/id/:id", getBlogById)
-blogRoute.put("/:id",isloggedIn,updateBlog)
-blogRoute.delete("/:id",isloggedIn,deleteBlog)
-blogRoute.delete("/:id",isloggedIn,deleteBlog)
-blogRoute.post("/:id/like",isloggedIn,deleteBlog)
 
 
+const router = express.Router()
 
-export default blogRoute
+router.route("/").get(getBlogs).post(isloggedIn, createBlog)
+router.route('/slug/:slug').get(getBlogsBySlug)
+router
+  .route("/:id")
+  .get(getBlog)
+  .put(isloggedIn, updateBlog)
+  .delete(isloggedIn, deleteBlog)
+
+router.route("/:id/image").post(isloggedIn, uploadBlogImage)
+
+router.route("/:id/gallery").post(isloggedIn,  addGalleryItem)
+
+router.route("/:id/gallery/:itemId").delete(isloggedIn, removeGalleryItem)
+
+export default router
