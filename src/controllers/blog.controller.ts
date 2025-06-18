@@ -125,6 +125,7 @@ export const createBlog = asyncHandler(async (req: any, res: Response) => {
   const session = await mongoose.startSession()
   session.startTransaction()
 req.body.author = req.loggedUser._id
+req.body.institution = req.loggedUser.institution
   try {
     const blog = await Blog.create([req.body])
 
