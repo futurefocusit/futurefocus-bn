@@ -59,14 +59,13 @@ export interface TeamTypes extends Document {
   institution: ObjectId;
   salary: number
   dateJoined: string,
-  contractSummary: string
+  contract: string
   name: string;
   active: boolean;
   attend: boolean;
   image: string;
   position: string;
   email: string;
-  instagram: string;
   password: string;
   isAdmin: boolean;
   isSuperAdmin: boolean;
@@ -79,6 +78,9 @@ export interface TeamTypes extends Document {
   // Added Details
   contractType: String,
   linkedIn: string,
+  instagram: string,
+  snapchat: string,
+  facebook: string,
   nationalId: string,
   leaveDetails:{
     isOnLeave: boolean,
@@ -88,6 +90,12 @@ export interface TeamTypes extends Document {
   },
   bio: string,
   skills: string[],
+  cv:string,
+  certificate: [{
+    name: string,
+    url: string
+  }],
+  ranking: number,
 }
 export interface ServiceTypes extends Document {
   institution: ObjectId;
