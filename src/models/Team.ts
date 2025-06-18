@@ -40,12 +40,13 @@ const TeamSchema = new Schema<TeamTypes>({
   bio: { type: String, default: "" },
   skills: { type: [String], default: [] },
   cv: { type: String },
-  certificate: [
-    {
+  certificate: {
+    types:[{
       name: { type: String },
       url: { type: String },
-    },
-  ],
+    }],
+    default:[]
+  },
   ranking: { type: Number },
 });
 const Team = model<TeamTypes>("Team", TeamSchema);
