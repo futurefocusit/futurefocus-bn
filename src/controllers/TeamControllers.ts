@@ -111,7 +111,7 @@ export class TeamControllers {
         return res.status(400).json({ message: "member doesnot exists" });
       }
 
-      await Team.deleteOne({ email: member.email }, { deleted: true,deletedBy:req.loggedUser.name });
+      await Team.findOneAndUpdate({ email: member.email }, { deleted: true,deletedBy:req.loggedUser.name });
       res.status(200).json({ message: "member deleted successfuly" });
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} Occured` });
