@@ -47,10 +47,12 @@ const TeamSchema = new Schema<TeamTypes>({
     }],
     default:[]
   },
-  ranking: { type: Number },
+  ranking: { type: Number, default: 0 },
   entry: {type: String},
   exit: {type: String},
-  paymentDate: {type: Date}
+  paymentDate: {type: Number, },
+  currency: {type: String},
+  days: {type: String}
 });
 const Team = model<TeamTypes>("Team", TeamSchema);
 

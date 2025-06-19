@@ -41,3 +41,4 @@ TeamRoute.put("/response/:id", TeamControllers.addresponse);
 TeamRoute.put("/toogle-attendance/:id", TeamControllers.switchAttend);
 TeamRoute.put("/toogle-active/:id", TeamControllers.activateMember);
 TeamRoute.get("/deleted", isloggedIn, TeamControllers.getDeletedMembers);
+TeamRoute.put("/update-rankings", TeamControllers.updateRanking)

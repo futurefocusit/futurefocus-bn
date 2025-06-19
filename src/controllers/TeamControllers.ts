@@ -38,9 +38,10 @@ export class TeamControllers {
       leaveDetails,
       entry,
       exit,
-      paymentDate,
+      currency,
+      days,
     } = req.body;
-
+    const paymentDate = new Date(dateJoined).getDate()
 
       const isExist = await Team.findOne({ email: email });
       if (isExist) {
@@ -71,7 +72,9 @@ export class TeamControllers {
       password,
       entry,
       exit,
+      currency,
       paymentDate,
+      days,
       institution: loggedUser.institution
     });
        res.status(200).json({ messsage: "member added" });
@@ -138,6 +141,7 @@ export class TeamControllers {
       const memberId = req.params.id;
       const { email, ...data } = req.body;
       const member = await Team.findById(memberId);
+      console.log(req.body)
 
       if (!member) {
         return res.status(400).json({ message: "member does not exist" });
@@ -586,4 +590,17 @@ export class TeamControllers {
         .json({ message: `Error ${error.message} occurred` });
     }
   };
+
+  static updateRanking = async(req: Request, res:Response)=>{
+    try {
+      const {rankings} = req.body
+      
+      for (const member of rankings ){
+       const user= await Team.findByIdAndUpdate(member._id,{ranking:member.ranking})
+      }
+      res.status(200).json({message:"Rankings updated successfully"})
+    } catch (error: any) {
+      res.status(500).json({message:`Error ${error.message} occurred`})
+    }
+  }
 }

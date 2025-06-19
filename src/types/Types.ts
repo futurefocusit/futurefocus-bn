@@ -58,7 +58,7 @@ export interface StudentTypes extends Document {
 export interface TeamTypes extends Document {
   institution: ObjectId;
   salary: number
-  dateJoined: string,
+  dateJoined: String,
   contract: string
   name: string;
   active: boolean;
@@ -98,7 +98,9 @@ export interface TeamTypes extends Document {
   ranking: number,
   entry: string,
   exit: string,
-  paymentDate: Date, 
+  paymentDate: number, 
+  currency: string,
+  days: string,
 }
 export interface ServiceTypes extends Document {
   institution: ObjectId;
@@ -107,7 +109,6 @@ export interface ServiceTypes extends Document {
   icon: string;
   deleted: boolean
   deletedBy: string,
-
 }
 
 export interface CourseTypes extends Document {
