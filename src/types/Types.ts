@@ -96,6 +96,9 @@ export interface TeamTypes extends Document {
     url: string
   }],
   ranking: number,
+  entry: string,
+  exit: string,
+  paymentDate: Date, 
 }
 export interface ServiceTypes extends Document {
   institution: ObjectId;
@@ -103,7 +106,7 @@ export interface ServiceTypes extends Document {
   subservices: string[];
   icon: string;
   deleted: boolean
-  deletedBy: string
+  deletedBy: string,
 
 }
 

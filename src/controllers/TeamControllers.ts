@@ -35,7 +35,10 @@ export class TeamControllers {
       nationalId,
       bio,
       skills,
-      leaveDetails
+      leaveDetails,
+      entry,
+      exit,
+      paymentDate,
     } = req.body;
 
 
@@ -66,6 +69,9 @@ export class TeamControllers {
       skills,
       leaveDetails,
       password,
+      entry,
+      exit,
+      paymentDate,
       institution: loggedUser.institution
     });
        res.status(200).json({ messsage: "member added" });
@@ -86,7 +92,7 @@ export class TeamControllers {
     } catch (error: any) {
       return res
         .status(500)
-        .json({ message: `error ${error.message} Occured` });
+        .json({ message: `error ${error.message} Occured`});
     }
   };
   static Team = async (req: any, res: Response) => {
