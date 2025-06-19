@@ -74,7 +74,6 @@ export class TeamControllers {
       paymentDate,
       institution: loggedUser.institution
     });
-       res.status(200).json({ messsage: "member added" });
        const mailOptions:Options = {
          from: `"${process.env.SMTP_FROM_NAME}" <${process.env.SMTP_FROM_EMAIL}>`,
         replyTo:"no-reply@xcooll.com",
@@ -89,6 +88,8 @@ export class TeamControllers {
         `
        }
        await sendEmail(mailOptions)
+       res.status(200).json({ messsage: "member added" });
+
     } catch (error: any) {
       return res
         .status(500)
