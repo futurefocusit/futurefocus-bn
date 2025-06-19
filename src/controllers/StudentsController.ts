@@ -92,6 +92,50 @@ export class StudentControllers {
       res.status(500).json({ message: `Error ${error.message} occured` });
     }
   };
+  static deleteMany = async (req: any, res: Response) => {
+  const loggedUser = (req as any).loggedUser;
+  const { ids } = req.body; // Extract array of IDs from request body
+
+  try {
+    // Validate that ids array is provided and not empty
+    if (!ids || !Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({ message: "Please provide an array of student IDs" });
+    }
+
+    // Update multiple students to mark them as deleted
+    const updateResult = await Student.updateMany(
+      { _id: { $in: ids }, deleted: { $ne: true } }, // Only update non-deleted students
+      { 
+        deleted: true, 
+        deletedBy: loggedUser.name,
+        deletedAt: new Date() // Optional: add timestamp
+      }
+    );
+
+    if (updateResult.matchedCount === 0) {
+      return res.status(404).json({ message: "No students found with the provided IDs" });
+    }
+
+
+    await Payment.updateMany(
+      { studentId: { $in: ids }, deleted: { $ne: true } },
+      { 
+        deleted: true, 
+        deletedBy: loggedUser.name,
+        deletedAt: new Date() 
+      }
+    );
+
+    res.status(200).json({ 
+      message: `${updateResult.modifiedCount} student(s) deleted successfully`,
+      deletedCount: updateResult.modifiedCount
+    });
+
+  } catch (error: any) {
+    console.error('Delete many students error:', error);
+    res.status(500).json({ message: `Error ${error.message} occurred` });
+  }
+};
 
 static changeStatus = async (req: Request, res: Response) => {
   const id = req.params.id;
