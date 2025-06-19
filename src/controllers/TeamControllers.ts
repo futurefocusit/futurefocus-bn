@@ -77,7 +77,6 @@ export class TeamControllers {
       days,
       institution: loggedUser.institution
     });
-       res.status(200).json({ messsage: "member added" });
        const mailOptions:Options = {
          from: `"${process.env.SMTP_FROM_NAME}" <${process.env.SMTP_FROM_EMAIL}>`,
         replyTo:"no-reply@xcooll.com",
@@ -92,6 +91,8 @@ export class TeamControllers {
         `
        }
        await sendEmail(mailOptions)
+       res.status(200).json({ messsage: "member added" });
+
     } catch (error: any) {
       return res
         .status(500)
@@ -130,7 +131,7 @@ export class TeamControllers {
         return res.status(400).json({ message: "member doesnot exists" });
       }
 
-      await Team.deleteOne({ email: member.email }, { deleted: true,deletedBy:req.loggedUser.name });
+      await Team.findOneAndUpdate({ email: member.email }, { deleted: true,deletedBy:req.loggedUser.name });
       res.status(200).json({ message: "member deleted successfuly" });
     } catch (error: any) {
       res.status(500).json({ message: `Error ${error.message} Occured` });
