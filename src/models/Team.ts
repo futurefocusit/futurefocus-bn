@@ -40,12 +40,12 @@ const TeamSchema = new Schema<TeamTypes>({
   bio: { type: String, default: "" },
   skills: { type: [String], default: [] },
   cv: { type: String },
-  certificate: {
-    types:[{
+  certificate: 
+    [{
       name: { type: String },
       url: { type: String },
     }],
-  },
+  
   ranking: { type: Number, default: 0 },
   entry: {type: String},
   exit: {type: String},
