@@ -18,19 +18,27 @@ export class TeamControllers {
       const {
       name,
       image,
+      cv,
+      certificate,
       email,
       position,
       phone,
-      instagram,
       salary,
       dateJoined,
-      contractSummary,
+      contract,
+      ranking,
       contractType,
       linkedIn,
+      instagram,
+      snapchat,
+      facebook,
       nationalId,
       bio,
       skills,
-      leaveDetails
+      leaveDetails,
+      entry,
+      exit,
+      paymentDate,
     } = req.body;
 
 
@@ -42,20 +50,28 @@ export class TeamControllers {
       await Team.create({
       name,
       image,
+      cv,
+      certificate,
       email,
       position,
       phone,
       instagram,
       salary,
       dateJoined,
-      contractSummary,
+      contract,
+      ranking,
       contractType,
       linkedIn,
       nationalId,
+      snapchat,
+      facebook,
       bio,
       skills,
       leaveDetails,
       password,
+      entry,
+      exit,
+      paymentDate,
       institution: loggedUser.institution
     });
        res.status(200).json({ messsage: "member added" });
@@ -76,7 +92,7 @@ export class TeamControllers {
     } catch (error: any) {
       return res
         .status(500)
-        .json({ message: `error ${error.message} Occured` });
+        .json({ message: `error ${error.message} Occured`});
     }
   };
   static Team = async (req: any, res: Response) => {
