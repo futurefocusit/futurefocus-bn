@@ -45,7 +45,6 @@ const TeamSchema = new Schema<TeamTypes>({
       name: { type: String },
       url: { type: String },
     }],
-    default:[]
   },
   ranking: { type: Number, default: 0 },
   entry: {type: String},
