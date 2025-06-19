@@ -7,12 +7,13 @@ const ServiceSchema= new Schema<ServiceTypes>({
         ref: "Institution",
         required: true,
       },
-  icon: { type: String, required: true },
-  subservices:{type:[String], required:true},
+  image: { type: String, required: true },
+  desc:{type:String, required:true},
   title:{type:String, required:true},
   deleted:{type:Boolean,required:true, default:false},
-   deletedBy:{type:String}
-
+  deletedBy:{type:String},
+  published: {type:Boolean, default:false},
+  publishedAt:{type:Schema.Types.ObjectId}
 },{timestamps:true});
 const Service = model<ServiceTypes>("Service", ServiceSchema )
 export default Service

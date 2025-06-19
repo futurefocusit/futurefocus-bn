@@ -7,6 +7,7 @@ import { isloggedIn } from "../middleware/isLoggedIn";
 export const ServiceRoute = Router()
 ServiceRoute.post("/new",isloggedIn, ServiceController.NewService)
 ServiceRoute.get("/", isloggedIn, ServiceController.getAll)
+ServiceRoute.get("/slug/:slug", ServiceController.getBySlug)
 ServiceRoute.get("/website", authenticateAPI, ServiceController.getAll)
 ServiceRoute.put("/update/:id", isloggedIn,ServiceController.update)
 ServiceRoute.delete("/delete/:id",isloggedIn, ServiceController.delete)

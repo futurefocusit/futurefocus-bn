@@ -102,11 +102,16 @@ export interface TeamTypes extends Document {
 }
 export interface ServiceTypes extends Document {
   institution: ObjectId;
+  _id?: string
   title: string;
-  subservices: string[];
-  icon: string;
-  deleted: boolean
-  deletedBy: string,
+  desc: string
+  image: string
+  published: boolean
+  publishedAt?: Date
+  deletedBy:ObjectId
+  deleted:boolean
+  createdAt?: Date
+  updatedAt?: Date
 
 }
 
