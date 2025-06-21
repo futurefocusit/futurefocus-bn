@@ -13,6 +13,7 @@ const TeamSchema = new Schema<TeamTypes>({
   position: { type: String, required: true },
   email: { type: String, required: true },
   phone: { type: String },
+  phone2: {type: String},
   salary: { type: Number },
   dateJoined: { type: String },
   contract: { type: String },
@@ -43,7 +44,7 @@ const TeamSchema = new Schema<TeamTypes>({
   certificate: 
     [{
       name: { type: String },
-      url: { type: String },
+      url: { type: String }, 
     }],
   
   ranking: { type: Number, default: 0 },
