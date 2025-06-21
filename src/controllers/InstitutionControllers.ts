@@ -195,7 +195,7 @@ export class InstitutionControllers {
 
             // Map institutions with their access features
             const institutionsWithAccess = institutions.map(inst => {
-                const institutionAccess = access.find(acc => acc.institution.toString() === inst._id.toString());
+                const institutionAccess = access.find(acc => acc.institution.toString() === (inst._id as any).toString());
                 return {
                     ...inst.toObject(),
                     access: institutionAccess || {

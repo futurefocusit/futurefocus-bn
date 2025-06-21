@@ -23,6 +23,7 @@ export class TeamControllers {
       email,
       position,
       phone,
+      phone2,
       salary,
       dateJoined,
       contract,
@@ -56,6 +57,7 @@ export class TeamControllers {
       email,
       position,
       phone,
+      phone2,
       instagram,
       salary,
       dateJoined,
@@ -602,6 +604,14 @@ export class TeamControllers {
       res.status(200).json({message:"Rankings updated successfully"})
     } catch (error: any) {
       res.status(500).json({message:`Error ${error.message} occurred`})
+    }
+  }
+
+  static reminderNotification = async(req: Request, res: Response)=>{
+    try {
+      
+    } catch (error) {
+      
     }
   }
 }

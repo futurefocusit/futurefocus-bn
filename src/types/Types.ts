@@ -72,6 +72,7 @@ export interface TeamTypes extends Document {
   role: ObjectId; 
   otp: number | null;
   phone: string;
+  phone2: string;
   deleted: boolean
   deletedBy: string
 
@@ -227,8 +228,7 @@ export interface Blog {
   updatedAt?: Date
 }
 
-export interface InstitutionTypes {
-  institution: ObjectId;
+export interface InstitutionTypes extends Document {
   isSuperInst: boolean
   name: string;
   heroImage:string  
@@ -255,8 +255,7 @@ export interface InstitutionTypes {
   deleted: boolean
   deletedBy: string
   location: string
-
-
+  updatedAt?: Date
 }
 export interface AccessPaymentTypes {
   institution: ObjectId;
@@ -279,7 +278,7 @@ export interface Ifeature {
   deleted: boolean
 }
 export interface accesstypes {
-  institution: ObjectId;
+  institution: InstitutionTypes | ObjectId;
   subscriptionEnd: Date;
   features: {
     feature: ObjectId;
@@ -303,4 +302,17 @@ export interface IAPI {
   deleted: boolean
   deletedBy: string
 
+}
+
+export interface reminderTypes{
+  image: string,
+  employeeName: string;
+  sentDate: string;
+  dueDate: string;
+  remainingDays: number;
+  status: "Pending" | "Paid" | "Late";
+  isPaid: boolean;
+  paidAt?: string;
+  paidAmount?: number;
+  remainigAmount?: number,
 }

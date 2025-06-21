@@ -4,6 +4,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import { dailyAttendance, teamAttendance } from "./jobs/AttendanceAutomation";
+import { subscriptionReminder } from "./jobs/paymentReminder";
 import { indexRouter } from "./routes/indexRoutes";
 import http from 'http';
 import mongoose from 'mongoose';
@@ -32,6 +33,7 @@ app.use(
 app.use(express.json()); 
 dailyAttendance();
 teamAttendance();
+subscriptionReminder();
  
 app.get("/", (req, res) => {
   res.send("Welcome to Future Focus");
